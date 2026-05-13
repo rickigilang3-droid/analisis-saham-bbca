@@ -1,0 +1,41 @@
+# fly.toml app configuration generated for analisis-saham-bbca
+app = "analisis-saham-bbca"
+primary_region = "sin"  # Singapore (closest to Indonesia)
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  APP_ENV = "production"
+  LOG_CHANNEL = "stack"
+  DB_CONNECTION = "sqlite"
+  QUEUE_CONNECTION = "database"
+  SESSION_DRIVER = "database"
+  CACHE_STORE = "database"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+
+[[services]]
+  protocol = "tcp"
+  internal_port = 8080
+
+  [services.concurrency]
+    type = "connections"
+    hard_limit = 1000
+    soft_limit = 100
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
+
+[deploy]
+  release_command = "php artisan migrate --force"
+
+[[mounts]]
+  source = "data"
+  destination = "/app/database"
