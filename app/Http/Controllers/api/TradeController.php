@@ -1,0 +1,250 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\Setting;
+use App\Models\StockData;
+use App\Models\Transaction;
+use App\Models\UserPortfolio;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+
+class TradeController extends Controller
+{
+    /**
+     * EKSEKUSI BELI / JUAL
+     */
+    public function execute(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'type'  => 'required|in:BUY,SELL',
+            'price' => 'required|numeric|min:1',
+            'lot'   => 'required|integer|min:1',
+            'stock' => 'nullable|string|max:10',
+        ]);
+
+        if (Setting::get('maintenance', '0') === '1') {
+            return response()->json(['message' => 'Sistem sedang maintenance.'], 503);
+        }
+
+        $user  = auth()->user();
+        $stock = strtoupper(trim($data['stock'] ?? 'BBCA'));
+        if (str_ends_with($stock, '.JK')) {
+            $stock = substr($stock, 0, -3);
+        }
+        $lot   = (int) $data['lot'];
+        $price = (float) $data['price'];
+        $total = $lot * 100 * $price;
+
+        $maxLot = (int) Setting::get('max_lot', '100');
+        if ($lot > $maxLot) {
+            return response()->json(['message' => "Maksimal $maxLot lot per transaksi."], 422);
+        }
+
+        try {
+            DB::transaction(function () use ($user, $data, $lot, $price, $total, $stock) {
+                $portfolio = UserPortfolio::firstOrNew([
+                    'user_id' => $user->id,
+                    'symbol'  => strtoupper($stock),
+                ]);
+
+                if ($data['type'] === 'BUY') {
+                    if ($user->balance < $total) {
+                        throw new \Exception('Saldo tidak mencukupi.');
+                    }
+
+                    $oldValue = $portfolio->lot * 100 * $portfolio->avg_price;
+                    $portfolio->lot += $lot;
+                    $portfolio->avg_price = $portfolio->lot > 0
+                        ? ($oldValue + $total) / ($portfolio->lot * 100)
+                        : 0;
+                    $portfolio->save();
+                    $user->decrement('balance', $total);
+                } else {
+                    if ($portfolio->lot < $lot) {
+                        throw new \Exception('Lot tidak mencukupi untuk ' . strtoupper($stock) . '.');
+                    }
+
+                    $portfolio->lot -= $lot;
+                    if ($portfolio->lot === 0) {
+                        $portfolio->delete();
+                    } else {
+                        $portfolio->save();
+                    }
+
+                    $user->increment('balance', $total);
+                }
+
+                Transaction::create([
+                    'user_id' => $user->id,
+                    'type'    => $data['type'],
+                    'stock'   => strtoupper($stock),
+                    'lot'     => $lot,
+                    'price'   => $price,
+                    'total'   => $total,
+                ]);
+            });
+
+            $user = $user->fresh();
+            $holdings = $user->portfolios()->get()->map(fn($row) => [
+                'symbol' => strtoupper($row->symbol),
+                'lot' => $row->lot,
+                'avg_price' => (float) $row->avg_price,
+            ]);
+
+            return response()->json([
+                'message'   => 'Transaksi berhasil.',
+                'balance'   => (float) $user->balance,
+                'holdings'  => $holdings,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
+    }
+
+    /**
+     * FUNGSI ANALISIS PREDIKSI AI GEMINI (ANTI-CORS)
+     */
+    public function analyze(Request $request): JsonResponse
+    {
+        $apiKey = env('GEMINI_API_KEY');
+        if (!$apiKey) {
+            return response()->json(['message' => 'API Key belum ada di .env'], 500);
+        }
+
+        // 1. Ambil prompt dari frontend (sudah disiapkan lengkap)
+        $prompt = $request->input('prompt');
+
+        // Fallback jika frontend tidak kirim prompt
+        if (!$prompt) {
+            $currentPrice = 10250;
+            try {
+                $stockRes = Http::timeout(5)->get("https://query1.finance.yahoo.com/v8/finance/chart/BBCA.JK?interval=1m&range=1d");
+                if ($stockRes->successful()) {
+                    $priceFromYahoo = $stockRes->json()['chart']['result'][0]['meta']['regularMarketPrice'] ?? null;
+                    if ($priceFromYahoo) $currentPrice = $priceFromYahoo;
+                }
+            } catch (\Exception $e) {}
+
+            $user   = auth()->user();
+            $prompt = "Kamu adalah analis saham profesional Indonesia. Analisis saham BBCA. " .
+                      "Harga: Rp " . round($currentPrice) . ". " .
+                      "Berikan analisis teknikal singkat dalam 3 paragraf. Jangan pakai bullet points.";
+        }
+
+        try {
+            $response = Http::withHeaders(['Content-Type' => 'application/json'])
+                ->timeout(30)
+                ->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=$apiKey", [
+                    'contents' => [['parts' => [['text' => $prompt]]]],
+                ]);
+
+            if ($response->successful()) {
+                $rawResult = $response->json();
+                $text = $rawResult['candidates'][0]['content']['parts'][0]['text'] ?? '';
+
+                if ($text) {
+                    return response()->json([
+                        'candidates' => [
+                            ['content' => ['parts' => [['text' => $text]]]]
+                        ]
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'message' => 'Gemini Error: ' . $response->status(),
+                'detail'  => $response->json()
+            ], 500);
+
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Koneksi AI Gagal: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function portfolio(): JsonResponse
+    {
+        $user = auth()->user();
+        $holdings = $user->portfolios()->get()->map(function ($row) {
+            $currentPrice = (float) StockData::where('symbol', strtoupper($row->symbol) . '.JK')
+                ->orderBy('trading_date', 'desc')
+                ->value('close_price') ?? 0;
+
+            return [
+                'symbol'    => strtoupper($row->symbol),
+                'lot'       => $row->lot,
+                'avg_price' => (float) $row->avg_price,
+                'current'   => $currentPrice,
+                'value'     => round($row->lot * 100 * $currentPrice, 2),
+            ];
+        });
+
+        return response()->json([
+            'balance'   => (float) $user->balance,
+            'holdings'  => $holdings,
+        ]);
+    }
+
+    public function history(): JsonResponse
+    {
+        $txs = auth()->user()
+            ->transactions()
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get()
+            ->map(fn($t) => [
+                'type'   => $t->type,
+                'symbol' => $t->stock,
+                'lot'    => $t->lot,
+                'price'  => (float) $t->price,
+                'time'   => $t->created_at->format('H:i:s'),
+            ]);
+
+        return response()->json($txs);
+    }
+
+    public function reset(): JsonResponse
+    {
+        $user = auth()->user();
+        DB::transaction(function () use ($user) {
+            $user->update(['balance' => 100000000]);
+            $user->transactions()->delete();
+            $user->portfolios()->delete();
+        });
+
+        return response()->json(['message' => 'Akun direset.']);
+    }
+
+    /**
+     * FUNGSI MENGAMBIL DATA KALENDER EVENT EMITEN
+     */
+    public function events(Request $request): JsonResponse
+    {
+        $symbol = strtoupper($request->query('symbol', 'BBCA'));
+        $month = $request->query('month', date('Y-m')); // Format 'YYYY-MM' dari frontend
+
+        // Karena kamu belum terhubung dengan tabel event yang real,
+        // kita gunakan dummy data yang mengikuti bulan yang sedang aktif di frontend.
+        $events = [
+            [
+                'title' => 'Pembagian Dividen Tunai',
+                'type' => 'dividen',
+                'event_date' => $month . '-12 00:00:00',
+                'value' => 50,
+                'description' => 'Dividen interim tahun buku berjalan untuk ' . $symbol . '.',
+            ],
+            [
+                'title' => 'RUPS Tahunan',
+                'type' => 'rups',
+                'event_date' => $month . '-25 09:00:00',
+                'value' => null,
+                'description' => 'Rapat Umum Pemegang Saham Tahunan.',
+            ]
+        ];
+
+        return response()->json($events);
+    }
+}
