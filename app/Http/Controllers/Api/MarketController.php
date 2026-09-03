@@ -235,17 +235,19 @@ class MarketController extends Controller
             $meta = $payload['meta'] ?? [];
             $quote = $payload['indicators']['quote'][0] ?? [];
             $timestamps = $payload['timestamp'] ?? [];
-            $closeValues = $quote['close'] ?? [];
+            $regularPrice = (float) ($meta['regularMarketPrice'] ?? 0);
+            $latestClose = $regularPrice > 0 ? $regularPrice : null;
 
-            $latestClose = null;
-            foreach (array_reverse($closeValues) as $value) {
-                if (is_numeric($value)) {
-                    $latestClose = (float) $value;
-                    break;
+            if (! $latestClose) {
+                foreach (array_reverse($closeValues) as $value) {
+                    if (is_numeric($value) && $value > 0) {
+                        $latestClose = (float) $value;
+                        break;
+                    }
                 }
             }
 
-            $latestClose = $latestClose ?? (float) ($meta['regularMarketPrice'] ?? 0);
+            $latestClose = $latestClose ?? 10250;
 
             return [
                 'price' => round($latestClose, 3),
