@@ -57,6 +57,10 @@ try {
     $app->useStoragePath($tmpStorage);
     $app->useBootstrapPath($tmp . '/bootstrap');
 
+    if (!$app->bound('view')) {
+        $app->register(\Illuminate\View\ViewServiceProvider::class);
+    }
+
     if ($isFirstInit && !file_exists(__DIR__ . '/../database/database.sqlite')) {
         try {
             Artisan::call('migrate', ['--force' => true]);
@@ -70,7 +74,11 @@ try {
 } catch (\Throwable $e) {
     http_response_code(500);
     echo "<h1>Laravel Server Error</h1>";
-    echo "<p><strong>Message:</strong> " . htmlspecialchars($e->getMessage()) . "</p>";
-    echo "<p><strong>File:</strong> " . htmlspecialchars($e->getFile()) . ":" . $e->getLine() . "</p>";
-    echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+    $curr = $e;
+    while ($curr) {
+        echo "<h3>" . get_class($curr) . ": " . htmlspecialchars($curr->getMessage()) . "</h3>";
+        echo "<p><strong>File:</strong> " . htmlspecialchars($curr->getFile()) . ":" . $curr->getLine() . "</p>";
+        echo "<pre>" . htmlspecialchars($curr->getTraceAsString()) . "</pre><hr>";
+        $curr = $curr->getPrevious();
+    }
 }
