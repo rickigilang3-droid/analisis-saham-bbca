@@ -54,7 +54,12 @@ try {
 
     // Render detailed exception directly to browser for debugging
     $app->make(\Illuminate\Contracts\Debug\ExceptionHandler::class)->renderable(function (\Throwable $e) {
-        return response("<h1>Laravel Exception</h1><p><strong>" . get_class($e) . ": " . htmlspecialchars($e->getMessage()) . "</strong></p><p>" . htmlspecialchars($e->getFile()) . ":" . $e->getLine() . "</p><pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>", 500);
+        http_response_code(500);
+        echo "<h1>Original Exception</h1>";
+        echo "<p><strong>" . get_class($e) . ":</strong> " . htmlspecialchars($e->getMessage()) . "</p>";
+        echo "<p><strong>File:</strong> " . htmlspecialchars($e->getFile()) . ":" . $e->getLine() . "</p>";
+        echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+        exit;
     });
 
     $app->handleRequest(Request::capture());
