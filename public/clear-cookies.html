@@ -1,0 +1,20 @@
+﻿<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Clear Cookies</title></head>
+<body style="font-family:sans-serif;text-align:center;padding:60px;background:#0a0f1a;color:#e2e8f0">
+<h1>🧹 Membersihkan Cookie...</h1>
+<p id="status">Menghapus semua cookie lama...</p>
+<script>
+var deleted = 0;
+document.cookie.split(";").forEach(function(c) {
+    var name = c.split("=")[0].trim();
+    if (name) {
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;secure";
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+        deleted++;
+    }
+});
+document.getElementById("status").innerHTML = 
+    "<strong>" + deleted + " cookie dihapus!</strong><br><br>" +
+    '<a href="/login" style="color:#06b6d4;font-size:1.2em">➡️ Lanjut ke Login</a>';
+</script>
+</body></html>

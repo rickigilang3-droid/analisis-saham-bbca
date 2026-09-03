@@ -9,7 +9,7 @@
   },
   "routes": [
     {
-      "src": "/(build|css|js|images|favicon.ico|robots.txt)(.*)",
+      "src": "/(build|css|js|images|favicon.ico|robots.txt|clear-cookies.html)(.*)",
       "dest": "/$1$2"
     },
     {
