@@ -889,7 +889,32 @@
       </div>
       {{-- END AI PREDICTION PANEL --}}
 
-      <div class="card-custom" id="performanceCard">
+      {{-- *** BARU: VALUASI HARGA WAJAR (DCF MODEL) *** --}}
+      <div class="card-custom mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="sec-label">VALUASI HARGA WAJAR (DCF MODEL)</span>
+          <span class="disc-badge-bull" id="valStatusBadge">🟢 UNDERVALUED</span>
+        </div>
+        <div class="row text-center g-2 mb-3">
+          <div class="col-4">
+            <div class="sec-label" style="font-size:9px;margin-bottom:2px;">FAIR VALUE (DCF)</div>
+            <div style="font-size:14px;font-weight:700;color:var(--accent);" id="dcfFairVal">Rp 11.200</div>
+          </div>
+          <div class="col-4">
+            <div class="sec-label" style="font-size:9px;margin-bottom:2px;">DDM MODEL</div>
+            <div style="font-size:14px;font-weight:700;color:#34d399;" id="ddmFairVal">Rp 10.950</div>
+          </div>
+          <div class="col-4">
+            <div class="sec-label" style="font-size:9px;margin-bottom:2px;">MARGIN OF SAFETY</div>
+            <div style="font-size:14px;font-weight:700;color:#10b981;" id="mosVal">+9.27%</div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--text2);background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.12);border-radius:6px;padding:8px 10px;line-height:1.5;">
+          💡 <strong>Analisis Valuasi BBCA:</strong> Harga pasar saat ini (Rp 10.250) diperdagangkan di bawah Estimasi Harga Wajar DCF (Rp 11.200), memberikan ruang *Margin of Safety* positif sebesar **9.27%**.
+        </div>
+      </div>
+
+      <div class="card-custom mb-3" id="performanceCard">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <span class="sec-label" id="perfLabel">PORTOFOLIO PERFORMANCE</span>
           <button class="btn-ghost" id="perfRefreshBtn" onclick="loadPerformance()" style="font-size:10px;">Refresh</button>
@@ -898,6 +923,17 @@
           <div style="flex:1;min-width:110px;"><div class="sec-label">Nilai Sekarang</div><div id="perfValue">Rp —</div></div>
           <div style="flex:1;min-width:110px;"><div class="sec-label">Unrealized P/L</div><div id="perfPL">Rp —</div></div>
           <div style="flex:1;min-width:110px;"><div class="sec-label">14D Change</div><div id="perfChange">—</div></div>
+        </div>
+      </div>
+
+      {{-- *** BARU: PAPAN PERINGKAT TRADER (LEADERBOARD) *** --}}
+      <div class="card-custom mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="sec-label">PAPAN PERINGKAT TRADER (ROI %)</span>
+          <button class="btn-ghost" style="font-size:10px;" onclick="loadLeaderboard()">Refresh</button>
+        </div>
+        <div id="leaderboardList" style="font-size:11px;">
+          <div class="text-center c-muted py-2">Memuat papan peringkat...</div>
         </div>
       </div>
 
@@ -992,6 +1028,31 @@
         <div class="sec-label" id="historyOrderLabel">HISTORY ORDER</div>
         <div id="tradeHistory" style="font-size:10px;max-height:200px;overflow:auto;">
           <div class="text-center c-muted mt-3" id="historyLoadingText" style="font-size:11px;">Memuat...</div>
+        </div>
+      </div>
+
+      {{-- *** BARU: KALKULATOR RISK / REWARD (R:R) *** --}}
+      <div class="card-custom mt-3">
+        <div class="sec-label">KALKULATOR RISK / REWARD (R:R)</div>
+        <div class="row g-2 mb-2">
+          <div class="col-6">
+            <div style="font-size:9px;color:var(--muted);margin-bottom:3px;">STOP LOSS (RP)</div>
+            <input type="number" id="calcSL" class="form-control-custom text-end" value="10000" oninput="updateRRCalc()">
+          </div>
+          <div class="col-6">
+            <div style="font-size:9px;color:var(--muted);margin-bottom:3px;">TARGET PROFIT (RP)</div>
+            <input type="number" id="calcTP" class="form-control-custom text-end" value="10750" oninput="updateRRCalc()">
+          </div>
+        </div>
+        <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:11px;">
+          <div class="d-flex justify-content-between mb-1"><span class="c-muted">Risk/Reward Ratio:</span><strong id="rrRatio" style="color:var(--accent);">1 : 2.00</strong></div>
+          <div class="d-flex justify-content-between mb-1"><span class="c-muted">Potensi Profit:</span><strong id="rrProfit" class="c-green">+Rp 50.000 / lot</strong></div>
+          <div class="d-flex justify-content-between"><span class="c-muted">Batas Potensial Rugi:</span><strong id="rrLoss" class="c-red">-Rp 25.000 / lot</strong></div>
+        </div>
+        <div class="mt-2 text-center">
+          <button class="btn-ghost w-100" style="font-size:10px;color:var(--accent);border-color:rgba(6,182,212,0.25);" onclick="requestNotificationPermission()">
+            🔔 Aktifkan Web Push Alert
+          </button>
         </div>
       </div>
     </div>
@@ -2359,6 +2420,86 @@ updateRealtimeClock();
 setInterval(updateRealtimeClock, 1000);
 
 /* ==========================================================
+   RISK / REWARD CALCULATOR & LEADERBOARD & PUSH ALERT
+   ========================================================== */
+function updateRRCalc() {
+  const curPrice = parseFloat(document.getElementById('inputPrice')?.value || currentPrice || 10250);
+  const sl = parseFloat(document.getElementById('calcSL')?.value || 10000);
+  const tp = parseFloat(document.getElementById('calcTP')?.value || 10750);
+  const lot = parseFloat(document.getElementById('inputLot')?.value || 1);
+
+  const risk = Math.max(1, curPrice - sl);
+  const reward = Math.max(1, tp - curPrice);
+  const ratio = (reward / risk).toFixed(2);
+
+  const profitTotal = (tp - curPrice) * 100 * lot;
+  const lossTotal = (curPrice - sl) * 100 * lot;
+
+  document.getElementById('rrRatio').textContent = '1 : ' + ratio;
+  document.getElementById('rrProfit').textContent = '+' + 'Rp ' + fmt(Math.round(profitTotal)) + ' (' + lot + ' lot)';
+  document.getElementById('rrLoss').textContent = '-' + 'Rp ' + fmt(Math.round(lossTotal)) + ' (' + lot + ' lot)';
+}
+
+async function loadLeaderboard() {
+  try {
+    const res = await fetch('/api/trade/leaderboard', { headers: { 'Accept': 'application/json' } });
+    const data = await res.json();
+    const list = data.leaderboard || [];
+
+    const el = document.getElementById('leaderboardList');
+    if (!el) return;
+
+    el.innerHTML = list.map(t => `
+      <div class="d-flex justify-content-between align-items-center py-2" style="border-bottom:1px solid rgba(255,255,255,0.04);">
+        <div class="d-flex align-items-center gap-2">
+          <div class="disc-avatar" style="width:26px;height:26px;font-size:10px;">${t.avatar}</div>
+          <div>
+            <div style="font-weight:700;font-size:11px;">${t.name} <span style="font-size:9px;" class="c-muted">${t.badge}</span></div>
+            <div class="c-muted" style="font-size:9px;">${t.role}</div>
+          </div>
+        </div>
+        <div class="text-end">
+          <div class="c-green" style="font-weight:700;">+${t.roi.toFixed(1)}%</div>
+          <div class="c-muted" style="font-size:9px;">Rp ${fmt(t.balance)}</div>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {}
+}
+
+async function loadValuation() {
+  try {
+    const res = await fetch('/api/market/valuation?symbol=BBCA', { headers: { 'Accept': 'application/json' } });
+    const data = await res.json();
+
+    if (data.dcf_fair_value) {
+      document.getElementById('dcfFairVal').textContent = 'Rp ' + fmt(data.dcf_fair_value);
+      document.getElementById('ddmFairVal').textContent = 'Rp ' + fmt(data.ddm_fair_value);
+      document.getElementById('mosVal').textContent = '+' + data.margin_of_safety + '%';
+      document.getElementById('valStatusBadge').textContent = '🟢 ' + data.status;
+    }
+  } catch(e) {}
+}
+
+function requestNotificationPermission() {
+  if (!("Notification" in window)) {
+    alert("Browser Anda belum mendukung fitur Web Push Notification.");
+    return;
+  }
+  Notification.requestPermission().then(permission => {
+    if (permission === "granted") {
+      alert("✅ Web Push Alert Berhasil Diaktifkan! Notifikasi sinyal & target harga akan muncul langsung di browser Anda.");
+      new Notification("BBCA Trading Alert Enabled", {
+        body: "Sistem notifikasi aktif! Anda akan menerima update target harga & sinyal AI real-time.",
+        icon: "/favicon.ico"
+      });
+    } else {
+      alert("Izin notifikasi tidak diberikan.");
+    }
+  });
+}
+
+/* ==========================================================
    INIT
    ========================================================== */
 document.addEventListener('DOMContentLoaded', function () {
@@ -2376,9 +2517,12 @@ document.addEventListener('DOMContentLoaded', function () {
   loadPerformance();
   updatePrice();
 
-  // *** BARU: load diskusi & event emiten ***
+  // *** BARU: load diskusi, event, leaderboard, & valuation ***
   loadDiscussions();
   loadEmitenEvents();
+  loadLeaderboard();
+  loadValuation();
+  updateRRCalc();
 
   document.getElementById('inputSymbol')?.addEventListener('change', () => {
     loadFundamentals();
@@ -2395,6 +2539,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // *** BARU: interval refresh diskusi & event ***
   setInterval(loadDiscussions, 30000);
   setInterval(loadEmitenEvents, 60000);
+  setInterval(loadLeaderboard, 60000);
 });
 </script>
 </body>

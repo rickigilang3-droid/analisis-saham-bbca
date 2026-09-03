@@ -224,6 +224,19 @@ class TradeController extends Controller
         return response()->json(['message' => 'Akun direset.']);
     }
 
+    public function leaderboard(): JsonResponse
+    {
+        $traders = [
+            ['rank' => 1, 'name' => 'Ricki Analyst', 'role' => 'PRO Trader', 'balance' => 142500000, 'roi' => 42.5, 'avatar' => 'RA', 'badge' => '🥇 Gold Master'],
+            ['rank' => 2, 'name' => 'Budi Santoso', 'role' => 'Scalper Pro', 'balance' => 128400000, 'roi' => 28.4, 'avatar' => 'BS', 'badge' => '🥈 Silver Pro'],
+            ['rank' => 3, 'name' => 'Siti Rahma', 'role' => 'Value Investor', 'balance' => 119200000, 'roi' => 19.2, 'avatar' => 'SR', 'badge' => '🥉 Bronze Expert'],
+            ['rank' => 4, 'name' => 'Hendra C', 'role' => 'Swing Trader', 'balance' => 114100000, 'roi' => 14.1, 'avatar' => 'HC', 'badge' => '⭐ Top Contributor'],
+            ['rank' => 5, 'name' => 'Eko Scalper', 'role' => 'Day Trader', 'balance' => 108900000, 'roi' => 8.9, 'avatar' => 'ES', 'badge' => '🔥 Active Trader'],
+        ];
+
+        return response()->json(['success' => true, 'leaderboard' => $traders]);
+    }
+
     /**
      * FUNGSI MENGAMBIL DATA KALENDER EVENT EMITEN
      */

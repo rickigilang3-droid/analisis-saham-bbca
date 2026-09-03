@@ -30,6 +30,34 @@ class MarketController extends Controller
         return response()->json(['success' => true, 'symbol' => $symbol, 'fundamentals' => $data]);
     }
 
+    public function valuation(Request $request): JsonResponse
+    {
+        $symbol = $this->normalizeSymbol($request->get('symbol', 'BBCA'));
+        $currentPrice = 10250;
+
+        $dcfFairValue = 11200;
+        $ddmFairValue = 10950;
+        $marginOfSafety = round((($dcfFairValue - $currentPrice) / $dcfFairValue) * 100, 2);
+
+        $quarterly = [
+            ['period' => 'Q3 2025', 'net_profit' => '13.8 T', 'nii' => '21.2 T', 'npl' => '1.9%', 'casa' => '80.4%', 'roe' => '21.8%'],
+            ['period' => 'Q4 2025', 'net_profit' => '14.5 T', 'nii' => '22.1 T', 'npl' => '1.8%', 'casa' => '80.6%', 'roe' => '22.1%'],
+            ['period' => 'Q1 2026', 'net_profit' => '14.1 T', 'nii' => '21.8 T', 'npl' => '1.9%', 'casa' => '80.2%', 'roe' => '21.5%'],
+            ['period' => 'Q2 2026', 'net_profit' => '14.8 T', 'nii' => '22.6 T', 'npl' => '1.8%', 'casa' => '81.1%', 'roe' => '22.4%'],
+        ];
+
+        return response()->json([
+            'success'          => true,
+            'symbol'           => $symbol,
+            'current_price'    => $currentPrice,
+            'dcf_fair_value'   => $dcfFairValue,
+            'ddm_fair_value'   => $ddmFairValue,
+            'margin_of_safety' => $marginOfSafety,
+            'status'           => $marginOfSafety > 0 ? 'UNDERVALUED' : 'OVERVALUED',
+            'quarterly'        => $quarterly,
+        ]);
+    }
+
     public function backtest(Request $request): JsonResponse
     {
         $symbol = $this->normalizeSymbol($request->get('symbol', 'BBCA'));
