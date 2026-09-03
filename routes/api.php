@@ -17,6 +17,7 @@ Route::get('/market/performance', [MarketController::class, 'performance']);
 Route::get('/market/analysis',    [MarketController::class, 'analysis']);
 Route::get('/market/sentiment',   [MarketController::class, 'sentiment']);
 Route::get('/events',             [EmitenEventController::class, 'index']);
+Route::get('/discussions',          [DiscussionController::class, 'index']);
 
 // ── Trading API (User Auth) ──────────────────────────────────────────────
 Route::middleware(['web', 'auth'])->group(function () {
