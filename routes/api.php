@@ -20,6 +20,7 @@ Route::get('/events',             [EmitenEventController::class, 'index']);
 Route::get('/discussions',          [DiscussionController::class, 'index']);
 Route::get('/market/valuation',     [MarketController::class, 'valuation']);
 Route::get('/trade/leaderboard',    [TradeController::class, 'leaderboard']);
+Route::get('/announcement',         [AdminApiController::class, 'getAnnouncement']);
 
 // ── Trading API (User Auth) ──────────────────────────────────────────────
 Route::middleware(['web', 'auth'])->group(function () {
@@ -51,6 +52,11 @@ Route::middleware(['web', 'auth', 'admin'])->prefix('admin')->group(function () 
     // Jalur: /api/admin/settings
     Route::get('/settings', [AdminApiController::class, 'getSettings']);
     Route::post('/settings', [AdminApiController::class, 'saveSettings']);
+
+    // Jalur: /api/admin/announcement & logs
+    Route::get('/announcement', [AdminApiController::class, 'getAnnouncement']);
+    Route::post('/announcement', [AdminApiController::class, 'saveAnnouncement']);
+    Route::get('/logs', [AdminApiController::class, 'getAuditLogs']);
 });
 
 Route::get('/health', fn() => response()->json(['status' => 'ok']));

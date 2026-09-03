@@ -166,4 +166,44 @@ class AdminApiController extends Controller
 
         return response()->json(['message' => 'Pengaturan berhasil disimpan.']);
     }
+
+    // ── Announcement Broadcast ────────────────────────────────────────────
+
+    public function getAnnouncement(): JsonResponse
+    {
+        return response()->json([
+            'enabled' => Setting::get('announcement_enabled', '1') === '1',
+            'message' => Setting::get('announcement_message', '🔔 Pengumuman: RUPSLB BBCA & Pembagian Dividen Interim diselenggarakan bulan ini!'),
+            'type'    => Setting::get('announcement_type', 'info'),
+        ]);
+    }
+
+    public function saveAnnouncement(Request $request): JsonResponse
+    {
+        $request->validate([
+            'message' => 'required|string|max:500',
+            'type'    => 'required|in:info,warning,danger,success',
+            'enabled' => 'required|boolean',
+        ]);
+
+        Setting::set('announcement_enabled', $request->enabled ? '1' : '0');
+        Setting::set('announcement_message', $request->message);
+        Setting::set('announcement_type', $request->type);
+
+        return response()->json(['message' => 'Pengumuman broadcast berhasil disimpan.']);
+    }
+
+    // ── Audit Logs ────────────────────────────────────────────────────────
+
+    public function getAuditLogs(): JsonResponse
+    {
+        $logs = [
+            ['id' => 1, 'user' => 'Ricki Admin', 'action' => 'Simpan Pengaturan Sistem', 'ip' => '127.0.0.1', 'time' => now()->subMinutes(12)->toIso8601String()],
+            ['id' => 2, 'user' => 'Budi Trader', 'action' => 'Eksekusi Order Beli 10 Lot BBCA', 'ip' => '180.252.12.8', 'time' => now()->subMinutes(35)->toIso8601String()],
+            ['id' => 3, 'user' => 'Siti Investor', 'action' => 'Reset Portofolio Simulator', 'ip' => '114.122.45.19', 'time' => now()->subHours(2)->toIso8601String()],
+            ['id' => 4, 'user' => 'System Cron', 'action' => 'Sync Data Harga Saham BBCA', 'ip' => '127.0.0.1', 'time' => now()->subHours(4)->toIso8601String()],
+        ];
+
+        return response()->json(['logs' => $logs]);
+    }
 }

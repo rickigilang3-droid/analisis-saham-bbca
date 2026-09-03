@@ -149,6 +149,12 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
       <span class="nav-icon"><i class="fa-solid fa-chart-bar"></i></span><span id="navReportsText">Laporan</span>
     </button>
     <div class="nav-section-label" id="navSectionSystem">Sistem</div>
+    <button class="nav-item" onclick="showPage('page-announcement', this)">
+      <span class="nav-icon"><i class="fa-solid fa-bullhorn"></i></span><span>Broadcast Banner</span>
+    </button>
+    <button class="nav-item" onclick="showPage('page-audit-log', this)">
+      <span class="nav-icon"><i class="fa-solid fa-shield-halved"></i></span><span>Audit Log</span>
+    </button>
     <button class="nav-item" onclick="showPage('page-settings', this)">
       <span class="nav-icon"><i class="fa-solid fa-gear"></i></span><span id="navSettingsText">Pengaturan</span>
     </button>
@@ -423,10 +429,86 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
             </div>
           </div>
         </div>
+    </div>
+
+    <!-- ================= PAGE: ANNOUNCEMENT BROADCAST ================= -->
+    <div id="page-announcement" class="page-section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">📢 Broadcast Banner Pengumuman</div>
+          <div style="font-size:.78rem;color:var(--muted)">Pesan yang di-broadcast akan langsung muncul di bagian atas halaman user</div>
+        </div>
+        <button class="btn-accent" onclick="saveAnnouncement()"><i class="fa-solid fa-paper-plane me-1"></i>Simpan & Broadcast</button>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="card-glass">
+            <div class="card-title-sm">Pesan Broadcast</div>
+            <div class="mb-3">
+              <label class="form-label" style="font-size:.78rem;color:var(--muted);font-weight:600">Teks Pengumuman</label>
+              <textarea id="ancMessage" class="input-custom" rows="4" placeholder="Tulis pengumuman penting untuk seluruh pengguna..."></textarea>
+            </div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" style="font-size:.78rem;color:var(--muted);font-weight:600">Tipe Banner</label>
+                <select id="ancType" class="input-custom">
+                  <option value="info">💡 Informasi (Biru)</option>
+                  <option value="success">✅ Pengumuman Positif (Hijau)</option>
+                  <option value="warning">⚠️ Peringatan (Kuning)</option>
+                  <option value="danger">🚨 Darurat / Maintenance (Merah)</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" style="font-size:.78rem;color:var(--muted);font-weight:600">Status Banner</label>
+                <div class="toggle-wrap py-2" style="border:none;">
+                  <div class="toggle-info"><div class="toggle-label">Tampilkan di User Dashboard</div></div>
+                  <div class="switch on" id="swAncEnabled" onclick="toggleSwitch('swAncEnabled')"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card-glass">
+            <div class="card-title-sm">Preview Banner User</div>
+            <div id="ancPreviewBox" style="padding:12px 14px;border-radius:10px;font-size:.82rem;background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.25);color:var(--accent);">
+              <span id="ancPreviewText">🔔 Pengumuman: RUPSLB BBCA & Pembagian Dividen Interim diselenggarakan bulan ini!</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-  </div>
+    <!-- ================= PAGE: AUDIT LOG ================= -->
+    <div id="page-audit-log" class="page-section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">🛡️ Log Aktivitas Audit Sistem</div>
+          <div style="font-size:.78rem;color:var(--muted)">Rekam jejak login, perubahan saldo, dan aktivitas admin/user</div>
+        </div>
+        <button class="btn-outline" onclick="loadAuditLogs()"><i class="fa-solid fa-arrows-rotate me-1"></i>Refresh Log</button>
+      </div>
+
+      <div class="card-glass">
+        <div class="table-wrap">
+          <table class="table-custom">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Pengguna</th>
+                <th>Aktivitas Sistem</th>
+                <th>IP Address</th>
+                <th>Waktu (WIB)</th>
+              </tr>
+            </thead>
+            <tbody id="auditLogTbody">
+              <tr><td colspan="5" class="text-center c-muted py-3">Memuat audit log...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 </div>
 
 <!-- TOAST -->
@@ -1286,6 +1368,64 @@ function initReportCharts() {
         data:{labels:days,datasets:[{label:'BUY',data:buyPerDay,backgroundColor:'rgba(16,185,129,0.6)',borderRadius:3},{label:'SELL',data:sellPerDay,backgroundColor:'rgba(239,68,68,0.6)',borderRadius:3}]},
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:chartPalette().tick,font:{size:11}}}},scales:{x:{grid:{display:false},ticks:{color:chartPalette().tick,font:{size:9},maxRotation:0}},y:{grid:{color:chartPalette().grid},ticks:{color:chartPalette().tick,font:{size:10},stepSize:1}}}}
     });
+}
+
+/* ============================================================
+   ANNOUNCEMENT & AUDIT LOGS
+   ============================================================ */
+async function loadAnnouncementAdmin() {
+  try {
+    const data = await apiFetch('/announcement');
+    document.getElementById('ancMessage').value = data.message || '';
+    document.getElementById('ancType').value    = data.type || 'info';
+    const sw = document.getElementById('swAncEnabled');
+    if (data.enabled) sw.classList.add('on'); else sw.classList.remove('on');
+    updateAncPreview();
+  } catch(e) {}
+}
+
+async function saveAnnouncement() {
+  const message = document.getElementById('ancMessage').value.trim();
+  const type    = document.getElementById('ancType').value;
+  const enabled = document.getElementById('swAncEnabled').classList.contains('on');
+
+  if (!message) { toast('Teks pengumuman tidak boleh kosong', 'error'); return; }
+
+  try {
+    await apiFetch('/announcement', {
+      method: 'POST',
+      body: JSON.stringify({ message, type, enabled })
+    });
+    toast('📢 Broadcast banner berhasil diperbarui!', 'success');
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+function updateAncPreview() {
+  const msg = document.getElementById('ancMessage').value || 'Tulis pengumuman...';
+  document.getElementById('ancPreviewText').textContent = msg;
+}
+
+async function loadAuditLogs() {
+  try {
+    const data = await apiFetch('/logs');
+    const tbody = document.getElementById('auditLogTbody');
+    const logs = data.logs || [];
+
+    if (!logs.length) {
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center c-muted py-3">Belum ada data audit log.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = logs.map(l => `
+      <tr>
+        <td>#${l.id}</td>
+        <td><strong>${l.user}</strong></td>
+        <td>${l.action}</td>
+        <td><span class="badge-status badge-active" style="font-family:'JetBrains Mono',monospace;">${l.ip}</span></td>
+        <td class="c-muted">${new Date(l.time).toLocaleTimeString('id-ID')} WIB</td>
+      </tr>
+    `).join('');
+  } catch(e) {}
 }
 
 /* ============================================================

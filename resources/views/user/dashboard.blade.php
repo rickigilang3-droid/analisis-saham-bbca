@@ -746,6 +746,11 @@
 
     {{-- TENGAH: Chart + Info + AI Prediction + Diskusi --}}
     <div style="display:flex;flex-direction:column;gap:12px;">
+      {{-- *** BROADCAST ANNOUNCEMENT BANNER *** --}}
+      <div id="userAnnouncementBanner" class="alert py-2 px-3 mb-1" style="display:none;border-radius:10px;font-size:12px;font-weight:600;">
+        <i class="fa-solid fa-bullhorn me-2"></i><span id="userAnnouncementText"></span>
+      </div>
+
       <div class="card-custom" style="height:530px;padding:0;overflow:hidden;">
         <div id="tvchart" style="width:100%;height:100%;"></div>
       </div>
@@ -2499,6 +2504,23 @@ function requestNotificationPermission() {
   });
 }
 
+async function loadUserAnnouncement() {
+  try {
+    const res = await fetch('/api/announcement', { headers: { 'Accept': 'application/json' } });
+    const data = await res.json();
+    const banner = document.getElementById('userAnnouncementBanner');
+    const text = document.getElementById('userAnnouncementText');
+
+    if (banner && text && data.enabled && data.message) {
+      banner.className = `alert alert-${data.type === 'danger' ? 'danger' : (data.type === 'warning' ? 'warning' : (data.type === 'success' ? 'success' : 'info'))} py-2 px-3 mb-1`;
+      text.textContent = data.message;
+      banner.style.display = 'block';
+    } else if (banner) {
+      banner.style.display = 'none';
+    }
+  } catch(e) {}
+}
+
 /* ==========================================================
    INIT
    ========================================================== */
@@ -2517,11 +2539,12 @@ document.addEventListener('DOMContentLoaded', function () {
   loadPerformance();
   updatePrice();
 
-  // *** BARU: load diskusi, event, leaderboard, & valuation ***
+  // *** BARU: load diskusi, event, leaderboard, & valuation & announcement ***
   loadDiscussions();
   loadEmitenEvents();
   loadLeaderboard();
   loadValuation();
+  loadUserAnnouncement();
   updateRRCalc();
 
   document.getElementById('inputSymbol')?.addEventListener('change', () => {
@@ -2536,10 +2559,11 @@ document.addEventListener('DOMContentLoaded', function () {
   setInterval(genOrders, 3000);
   setInterval(loadHistory, 15000);
 
-  // *** BARU: interval refresh diskusi & event ***
+  // *** BARU: interval refresh diskusi, event, & announcement ***
   setInterval(loadDiscussions, 30000);
   setInterval(loadEmitenEvents, 60000);
   setInterval(loadLeaderboard, 60000);
+  setInterval(loadUserAnnouncement, 30000);
 });
 </script>
 </body>
