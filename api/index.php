@@ -38,6 +38,22 @@ try {
     putenv("VIEW_COMPILED_PATH={$tmpStorage}/framework/views");
     $_ENV['VIEW_COMPILED_PATH'] = "{$tmpStorage}/framework/views";
 
+    // Redirect all framework cache files to writable /tmp
+    putenv("APP_SERVICES_CACHE={$tmp}/services.php");
+    $_ENV['APP_SERVICES_CACHE'] = "{$tmp}/services.php";
+    putenv("APP_PACKAGES_CACHE={$tmp}/packages.php");
+    $_ENV['APP_PACKAGES_CACHE'] = "{$tmp}/packages.php";
+    putenv("APP_CONFIG_CACHE={$tmp}/config.php");
+    $_ENV['APP_CONFIG_CACHE'] = "{$tmp}/config.php";
+    putenv("APP_ROUTES_CACHE={$tmp}/routes.php");
+    $_ENV['APP_ROUTES_CACHE'] = "{$tmp}/routes.php";
+    putenv("APP_EVENTS_CACHE={$tmp}/events.php");
+    $_ENV['APP_EVENTS_CACHE'] = "{$tmp}/events.php";
+
+    if (!file_exists("{$tmp}/packages.php") && file_exists(__DIR__ . '/../bootstrap/cache/packages.php')) {
+        @copy(__DIR__ . '/../bootstrap/cache/packages.php', "{$tmp}/packages.php");
+    }
+
     // Normalize Vercel REQUEST_URI / PATH_INFO so Laravel routes match properly
     if (isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO'] === '/api/index.php') {
         $_SERVER['PATH_INFO'] = '/';
