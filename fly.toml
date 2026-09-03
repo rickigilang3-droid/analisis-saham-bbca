@@ -42,7 +42,7 @@ primary_region = "sin"  # Singapore (closest to Indonesia)
   memory_mb = 512
 
 [deploy]
-  release_command = "php artisan migrate --force"
+  release_command = "sh -c 'mkdir -p /app/database && touch /app/database/database.sqlite && php artisan migrate --force'"
 
 [[mounts]]
   source = "data"

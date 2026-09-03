@@ -26,7 +26,7 @@ return new class extends Migration
 
         Schema::create('stock_indicators', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('stock_data_id')->constrained()->onDelete('cascade');
+            $table->foreignId('stock_data_id')->constrained('stock_data')->onDelete('cascade');
             $table->decimal('ma5', 12, 2)->nullable();
             $table->decimal('ma10', 12, 2)->nullable();
             $table->decimal('ma20', 12, 2)->nullable();

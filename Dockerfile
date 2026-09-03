@@ -1,3 +1,12 @@
+FROM node:20-alpine AS frontend
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci || npm install
+COPY vite.config.js postcss.config.js tailwind.config.js ./
+COPY resources ./resources
+COPY public ./public
+RUN npm run build
+
 FROM php:8.3-fpm-alpine
 
 # Install system dependencies
@@ -18,13 +27,15 @@ WORKDIR /app
 
 # Copy application files
 COPY . .
+COPY --from=frontend /app/public/build ./public/build
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Create cache directories
-RUN mkdir -p storage/framework/{cache,sessions,views} \
-    && chmod -R 775 storage bootstrap/cache
+# Create cache and database directories
+RUN mkdir -p storage/framework/{cache,sessions,views} database \
+    && touch database/database.sqlite \
+    && chmod -R 777 storage bootstrap/cache database
 
 # Copy Nginx config
 COPY <<EOF /etc/nginx/http.d/default.conf
@@ -74,4 +85,4 @@ RUN php artisan key:generate --no-interaction || true
 EXPOSE 8080
 
 # Start services
-CMD ["sh", "-c", "php-fpm -D && supervisord -c /etc/supervisord.conf && nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "mkdir -p /app/database && touch /app/database/database.sqlite && chmod -R 777 /app/database /app/storage /app/bootstrap/cache && php-fpm -D && supervisord -c /etc/supervisord.conf && nginx -g 'daemon off;'"]

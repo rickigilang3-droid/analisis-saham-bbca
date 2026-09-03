@@ -15,7 +15,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name', 'email', 'password',
-        'role', 'status', 'balance', 'lots', 'avg_price', 'stock',
+        'role', 'status', 'is_active', 'balance', 'lots', 'avg_price', 'stock',
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -26,6 +26,7 @@ class User extends Authenticatable
         'balance'           => 'decimal:2',
         'avg_price'         => 'decimal:2',
         'lots'              => 'integer',
+        'is_active'         => 'boolean',
     ];
 
     public function transactions()
@@ -50,6 +51,6 @@ class User extends Authenticatable
 
     public function isActive(): bool
     {
-        return $this->status === 'active';
+        return ($this->status ?? 'active') === 'active' && ($this->is_active ?? true);
     }
 }

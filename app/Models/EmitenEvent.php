@@ -10,4 +10,13 @@ class EmitenEvent extends Model
     protected $casts = [
         'event_date' => 'date',
     ];
+
+    public function getDateAttribute()
+    {
+        if ($this->event_date instanceof \DateTime) {
+            return $this->event_date->format('Y-m-d');
+        }
+
+        return $this->attributes['event_date'] ?? null;
+    }
 }

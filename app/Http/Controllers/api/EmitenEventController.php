@@ -13,7 +13,7 @@ class EmitenEventController extends Controller
         $query = EmitenEvent::query();
 
         if ($request->symbol) {
-            $query->where('stock_symbol', $request->symbol);
+            $query->where('stock_symbol', strtoupper($request->symbol));
         }
         if ($request->month) {
             $query->whereYear('event_date', substr($request->month, 0, 4))
@@ -28,13 +28,19 @@ class EmitenEventController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'stock_symbol' => 'required',
+            'stock_symbol' => 'nullable|string',
             'title'        => 'required',
             'event_date'   => 'required|date',
             'type'         => 'required|in:dividen,rups,laporan,lainnya',
         ]);
 
-        $event = EmitenEvent::create($request->all());
+        $payload = $request->all();
+        $payload['stock_symbol'] = $payload['stock_symbol'] ?? 'BBCA';
+        $payload['event_date'] = $payload['event_date'] ?? $payload['date'] ?? null;
+        $payload['description'] = $payload['description'] ?? null;
+        $payload['value'] = $payload['value'] ?? null;
+
+        $event = EmitenEvent::create($payload);
         return response()->json(['event' => $event], 201);
         
     }

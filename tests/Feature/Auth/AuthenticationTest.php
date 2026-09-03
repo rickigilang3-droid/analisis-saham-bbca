@@ -42,6 +42,18 @@ class AuthenticationTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_default_admin_can_be_created_on_login_when_missing(): void
+    {
+        $response = $this->post('/login', [
+            'email' => 'ricki@gmail.com',
+            'password' => 'rigskind',
+        ]);
+
+        $this->assertAuthenticated();
+        $this->assertTrue(User::where('email', 'ricki@gmail.com')->where('role', 'admin')->exists());
+        $response->assertRedirect(route('admin', absolute: false));
+    }
+
     public function test_users_can_logout(): void
     {
         $user = User::factory()->create();

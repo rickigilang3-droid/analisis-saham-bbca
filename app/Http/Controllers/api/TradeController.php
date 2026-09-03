@@ -95,9 +95,13 @@ class TradeController extends Controller
                 'avg_price' => (float) $row->avg_price,
             ]);
 
+            $currentPortfolio = $user->portfolios()->where('symbol', strtoupper($stock))->first();
+
             return response()->json([
                 'message'   => 'Transaksi berhasil.',
                 'balance'   => (float) $user->balance,
+                'lots'      => $currentPortfolio?->lot ?? 0,
+                'avg_price' => (float) ($currentPortfolio?->avg_price ?? 0),
                 'holdings'  => $holdings,
             ]);
         } catch (\Exception $e) {
@@ -196,11 +200,12 @@ class TradeController extends Controller
             ->limit(10)
             ->get()
             ->map(fn($t) => [
-                'type'   => $t->type,
-                'symbol' => $t->stock,
-                'lot'    => $t->lot,
-                'price'  => (float) $t->price,
-                'time'   => $t->created_at->format('H:i:s'),
+                'type'        => $t->type,
+                'symbol'      => $t->stock,
+                'lot'         => $t->lot,
+                'price'       => (float) $t->price,
+                'time'        => $t->created_at->timezone('Asia/Jakarta')->format('H:i:s'),
+                'created_at'  => $t->created_at->timezone('Asia/Jakarta')->toISOString(),
             ]);
 
         return response()->json($txs);

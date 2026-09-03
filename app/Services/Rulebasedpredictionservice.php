@@ -10,9 +10,9 @@ class RuleBasedPredictionService
     /**
      * Analisis rule-based menggunakan MA, RSI, MACD, Bollinger Bands
      */
-    public function analyze(): array
+    public function analyze(string $symbol = 'BBCA.JK'): array
     {
-        $latest = StockData::where('symbol', 'BBCA.JK')
+        $latest = StockData::where('symbol', $symbol)
             ->orderBy('trading_date', 'desc')
             ->with('indicator')
             ->first();
@@ -132,7 +132,7 @@ class RuleBasedPredictionService
 
         // Simpan prediksi
         Prediction::create([
-            'symbol'          => 'BBCA.JK',
+            'symbol'          => $symbol,
             'prediction_date' => now()->toDateString(),
             'target_date'     => now()->addDays(3)->toDateString(),
             'prediction_type' => 'rule_based',

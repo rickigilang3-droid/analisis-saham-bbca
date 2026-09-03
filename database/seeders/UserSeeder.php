@@ -12,22 +12,30 @@ class UserSeeder extends Seeder
     {
         // Admin - Ricki
         User::create([
-            'name'     => 'Ricki',
-            'email'    => 'ricki@gmail.com',
-            'password' => Hash::make('rigskind'),
-            'role'     => 'admin',
-            'is_active' => true, // ← tambah ini
-            'stock'    => 'BBCA',
+            'name'      => 'Ricki',
+            'email'     => 'ricki@gmail.com',
+            'password'  => Hash::make('rigskind'),
+            'role'      => 'admin',
+            'status'    => 'active',
+            'is_active' => true,
+            'balance'   => 100000000,
+            'lots'      => 0,
+            'avg_price' => 0,
+            'stock'     => 'BBCA',
         ]);
 
         // User - Amelia
         User::create([
-            'name'     => 'Amelia',
-            'email'    => 'amelia@gmail.com',
-            'password' => Hash::make('rigskind'),
-            'role'     => 'user',
-            'is_active' => true, // ← tambah ini
-            'stock'    => 'BBCA',
+            'name'      => 'Amelia',
+            'email'     => 'amelia@gmail.com',
+            'password'  => Hash::make('rigskind'),
+            'role'      => 'user',
+            'status'    => 'active',
+            'is_active' => true,
+            'balance'   => 100000000,
+            'lots'      => 0,
+            'avg_price' => 0,
+            'stock'     => 'BBCA',
         ]);
     }
 }

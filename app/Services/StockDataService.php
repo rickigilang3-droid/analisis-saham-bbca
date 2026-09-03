@@ -20,8 +20,10 @@ class StockDataService
     /**
      * Fetch data saham dari Yahoo Finance (gratis, tanpa API key)
      */
-    public function fetchFromYahoo(int $days = 90): array
+    public function fetchFromYahoo(int $days = 90, string $symbol = 'BBCA.JK'): array
     {
+        $this->symbol = $this->normalizeSymbol($symbol);
+
         try {
             $period2 = time();
             $period1 = $period2 - ($days * 86400);
@@ -170,8 +172,10 @@ class StockDataService
         return $ema;
     }
 
-    public function getLatestPrice(): ?array
+    public function getLatestPrice(string $symbol = 'BBCA.JK'): ?array
     {
+        $this->symbol = $this->normalizeSymbol($symbol);
+
         $latest = StockData::where('symbol', $this->symbol)
             ->orderBy('trading_date', 'desc')
             ->with('indicator')
@@ -180,12 +184,25 @@ class StockDataService
         return $latest ? $latest->toArray() : null;
     }
 
-    public function getHistoryForChart(int $days = 60): array
+    public function getHistoryForChart(int $days = 60, string $symbol = 'BBCA.JK'): array
     {
+        $this->symbol = $this->normalizeSymbol($symbol);
+
         return StockData::where('symbol', $this->symbol)
             ->recent($days)
             ->with('indicator')
             ->get()
             ->toArray();
+    }
+
+    private function normalizeSymbol(string $symbol): string
+    {
+        $symbol = strtoupper(trim($symbol));
+
+        if ($symbol === '' || !str_contains($symbol, 'BBCA')) {
+            return 'BBCA.JK';
+        }
+
+        return str_ends_with($symbol, '.JK') ? $symbol : $symbol . '.JK';
     }
 }

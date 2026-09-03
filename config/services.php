@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    'ml_service' => [
+        'enabled' => env('ML_SERVICE_ENABLED', false),
+        'url' => env('ML_SERVICE_URL', 'http://127.0.0.1:5001'),
+    ],
+
+    'anthropic' => [
+        'key' => env('ANTHROPIC_API_KEY'),
+        'model' => env('ANTHROPIC_MODEL', 'claude-sonnet-4-20250514'),
+    ],
+
 ];

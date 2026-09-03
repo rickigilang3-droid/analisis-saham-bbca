@@ -19,11 +19,11 @@ class AIPredictionService
     /**
      * Analisis AI menggunakan Claude API
      */
-    public function analyze(): array
+    public function analyze(string $symbol = 'BBCA.JK'): array
     {
         try {
             // Ambil data 30 hari terakhir
-            $stocks = StockData::where('symbol', 'BBCA.JK')
+            $stocks = StockData::where('symbol', $symbol)
                 ->recent(30)
                 ->with('indicator')
                 ->get();
@@ -38,7 +38,7 @@ class AIPredictionService
             $priceChange = round((($latest->close_price - $prev->close_price) / $prev->close_price) * 100, 2);
 
             // Buat ringkasan data untuk AI
-            $dataSummary = $this->buildDataSummary($stocks, $latest, $priceChange);
+            $dataSummary = $this->buildDataSummary($symbol, $stocks, $latest, $priceChange);
 
             // Kirim ke Claude API
             $response = $this->client->post('https://api.anthropic.com/v1/messages', [
@@ -74,7 +74,7 @@ class AIPredictionService
             ];
 
             Prediction::create([
-                'symbol'          => 'BBCA.JK',
+                'symbol'          => $symbol,
                 'prediction_date' => now()->toDateString(),
                 'target_date'     => now()->addDays(7)->toDateString(),
                 'prediction_type' => 'ai',
@@ -96,7 +96,7 @@ class AIPredictionService
         }
     }
 
-    private function buildDataSummary($stocks, $latest, $priceChange): string
+    private function buildDataSummary(string $symbol, $stocks, $latest, $priceChange): string
     {
         $ind = $latest->indicator;
 
@@ -112,7 +112,7 @@ class AIPredictionService
             $priceTable .= "{$r['tanggal']} | Rp{$r['close']} | {$r['volume']}\n";
         }
 
-        return "Analisis Teknikal Saham BBCA (BBCA.JK) - " . now()->format('d M Y') . "\n\n"
+        return "Analisis Teknikal Saham {$symbol} - " . now()->format('d M Y') . "\n\n"
             . "=== DATA TERKINI ===\n"
             . "Harga Terakhir: Rp " . number_format($latest->close_price, 0, ',', '.') . "\n"
             . "Perubahan: {$priceChange}%\n"

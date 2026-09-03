@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmitenEvent;
 use Illuminate\Http\Request;
-use App\Models\Event;
 
 class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::orderBy('date', 'asc')->paginate(20);
+        $events = EmitenEvent::orderBy('event_date', 'asc')->paginate(20);
         return view('events.index', compact('events'));
     }
 
@@ -18,15 +18,25 @@ class EventController extends Controller
         $request->validate([
             'title' => 'required',
             'date' => 'required|date',
-            'type' => 'required',
+            'type' => 'required|in:dividen,rups,laporan,lainnya',
+            'description' => 'nullable|string',
         ]);
-        Event::create($request->only(['title', 'date', 'type', 'description']));
-        return redirect()->route('events.index');
+
+        EmitenEvent::create([
+            'stock_symbol' => $request->input('stock_symbol', 'BBCA'),
+            'title' => $request->title,
+            'description' => $request->description,
+            'type' => $request->type,
+            'event_date' => $request->date,
+            'value' => $request->input('value'),
+        ]);
+
+        return redirect()->route('events.index')->with('status', 'Event berhasil ditambahkan.');
     }
 
     public function show($id)
     {
-        $event = Event::findOrFail($id);
+        $event = EmitenEvent::findOrFail($id);
         return view('events.show', compact('event'));
     }
 }

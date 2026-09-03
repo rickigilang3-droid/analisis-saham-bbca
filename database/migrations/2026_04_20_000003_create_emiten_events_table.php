@@ -23,6 +23,6 @@ public function up(): void
 
     public function down(): void
     {
-        Schema::dropIfExists('events');
+        Schema::dropIfExists('emiten_events');
     }
 };

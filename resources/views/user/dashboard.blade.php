@@ -504,6 +504,18 @@
     background: rgba(15,23,42,0.08);
     color: #334155;
   }
+  .event-date-badge {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    text-align: center;
+    padding: 6px 0;
+    font-size: 10px;
+    font-weight: 700;
+  }
 
   ::-webkit-scrollbar { width: 4px; height: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -802,8 +814,8 @@
         <div class="ai-box">
           <div class="ai-box-header">
             <div style="display:flex;align-items:center;gap:8px;">
-              <span class="ai-box-title">✨ ANALISIS RICKI AI</span>
-              <span class="gemini-badge">● Gemini 2.5 Flash</span>
+              <span class="ai-box-title"> ANALISIS RICKI AI</span>
+              <span class="gemini-badge">● Amelia 2.5 Flash</span>
             </div>
             <button class="btn-ai" id="btnAskAI" onclick="askGemini()">
               Analisis Sekarang
@@ -1255,11 +1267,21 @@ async function loadPortfolio() {
 }
 
 async function loadHistory() {
+  const el = document.getElementById('tradeHistory');
+  if (el) {
+    el.innerHTML = '<div class="text-center c-muted mt-3" style="font-size:11px;">' + t('historyLoadingText') + '</div>';
+  }
+
   try {
     const res = await fetch(API.HISTORY, { headers: { 'Accept': 'application/json' } });
-    if (!res.ok) throw new Error();
-    tradeHistory = await res.json();
-  } catch(e) { console.warn('Gagal load history.'); }
+    if (!res.ok) throw new Error('Gagal load history');
+    const data = await res.json();
+    tradeHistory = Array.isArray(data) ? data : [];
+  } catch(e) {
+    console.warn('Gagal load history.', e);
+    tradeHistory = [];
+  }
+
   renderHistory();
 }
 
@@ -1659,7 +1681,7 @@ async function trade(type) {
     portfolio.lots      = data.lots;
     portfolio.avg_price = data.avg_price;
     updatePortfolioUI();
-    loadHistory();
+    await loadHistory();
   } catch(e) { showError(t('networkRetry')); }
 }
 
@@ -1845,19 +1867,11 @@ function runTA() {
   document.getElementById('indPred1hSig').className   = 'ind-sig ' + (pred1hChg>=0?'c-green':'c-red');
 
   document.getElementById('tSupport').textContent = 'Rp ' + fmt(support);
-  document.getElementById('tBuy').textContent     = 'Rp ' + fmt(Math.round(cur * 0.985));
-  document.getElementById('tSell').textContent    = 'Rp ' + fmt(Math.round(cur * 1.02));
+  document.getElementById('tBuy').textContent     = 'Rp ' + fmt(Math.round(cur * 0.99));
+  document.getElementById('tSell').textContent    = 'Rp ' + fmt(Math.round(cur * 1.01));
   document.getElementById('tResist').textContent  = 'Rp ' + fmt(resist);
 
   let bull = 0;
-  if (maBull) bull += 2;
-  if (rsi < 50 && rsi > 30) bull += 2;
-  if (macd.hist > 0) bull += 2;
-  if (stoch < 50 && stoch > 20) bull += 1;
-  if (bbPct < 60) bull += 1;
-  if (chg >= 0) bull += 1;
-  const bullPct = Math.round((bull / 9) * 100);
-  const signal  = bullPct >= 60 ? 'BUY' : bullPct <= 40 ? 'SELL' : 'HOLD';
 
   const sigCfg = {
     BUY:  { icon:'📈', clr:'#10b981', desc:'Sinyal beli kuat — mayoritas indikator bullish',    bg:'rgba(16,185,129,0.08)',  bd:'rgba(16,185,129,0.25)' },
@@ -1865,12 +1879,6 @@ function runTA() {
     HOLD: { icon:'⚖️', clr:'#f59e0b', desc:'Indikator campuran — disarankan tunggu konfirmasi', bg:'rgba(245,158,11,0.07)', bd:'rgba(245,158,11,0.25)' },
   };
   const sc = sigCfg[signal];
-  document.getElementById('signalIcon').textContent = sc.icon;
-  document.getElementById('signalMain').innerHTML   = '<span style="color:' + sc.clr + ';font-size:16px;font-weight:800;">' + signal + '</span>';
-  document.getElementById('signalDesc').textContent = sc.desc;
-  document.getElementById('signalConf').innerHTML   = '<span style="color:' + sc.clr + '">' + bullPct + '%</span>';
-  document.getElementById('mainSignalBar').style.background  = sc.bg;
-  document.getElementById('mainSignalBar').style.borderColor = sc.bd;
 
   const locale = currentLang === 'en' ? 'en-US' : 'id-ID';
   document.getElementById('updateTime').textContent = t('updateLabel') + ': ' + new Date().toLocaleTimeString(locale) + (currentLang === 'en' ? '' : ' WIB');
@@ -2085,9 +2093,10 @@ async function loadEmitenEvents(offset = 0) {
     calendarEl.innerHTML = '<div class="text-center c-muted mt-3" style="font-size:11px;">' + t('eventLoadingText') + '</div>';
   }
 
-  try {
+    try {
     const res = await fetch(API.EVENTS + '?symbol=BBCA&month=' + monthReq, {
-      headers: { 'Accept': 'application/json' }
+      headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': CSRF },
+      credentials: 'same-origin'
     });
     const data = await res.json();
     const eventsList = Array.isArray(data) ? data : (data.events || []);
@@ -2219,7 +2228,9 @@ document.addEventListener('DOMContentLoaded', function () {
   loadDiscussions();
   loadEmitenEvents();
 
-  document.getElementById('inputSymbol')?.addEventListener('change', loadFundamentals);
+  document.getElementById('inputSymbol')?.addEventListener('change', () => {
+    loadFundamentals();
+  });
 
   setInterval(updatePrice, 5000);
   setInterval(loadPortfolio, 15000);
@@ -2227,6 +2238,7 @@ document.addEventListener('DOMContentLoaded', function () {
   setInterval(loadWatchlist, 30000);
   setInterval(loadPerformance, 30000);
   setInterval(genOrders, 3000);
+  setInterval(loadHistory, 15000);
 
   // *** BARU: interval refresh diskusi & event ***
   setInterval(loadDiscussions, 30000);

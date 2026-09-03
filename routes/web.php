@@ -1,7 +1,8 @@
 <?php
-use App\Http\Controllers\Api\DiscussionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\TradeController;
+use App\Http\Controllers\Api\DiscussionController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
 
 // 1. Root redirect
@@ -22,6 +23,16 @@ Route::get('/', function () {
 
 // 2. User Biasa
 Route::middleware(['auth'])->group(function () {
+
+    Route::get('/events', [EventController::class, 'index'])->name('events.index');
+    Route::post('/events', [EventController::class, 'store'])->name('events.store');
+    Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+
+    Route::get('/discussions', [DiscussionController::class, 'index'])->name('discussions.index');
+    Route::post('/discussions', [DiscussionController::class, 'store'])->name('discussions.store');
+    Route::get('/discussions/{discussion}', [DiscussionController::class, 'show'])->name('discussions.show');
+    Route::post('/discussions/{id}/comments', [DiscussionController::class, 'addComment'])->name('discussions.comment');
+    Route::post('/discussions/{id}/like', [DiscussionController::class, 'like'])->name('discussions.like');
 
     Route::get('/dashboard', function () {
         if (!auth()->user()->isActive()) {
