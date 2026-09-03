@@ -1924,7 +1924,7 @@ Berikan analisis dalam Bahasa Indonesia, format 3 paragraf singkat: (1) kondisi 
     const response = await fetch('/api/ai/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
-      body: JSON.stringify({ prompt })
+      body: JSON.stringify({ prompt, ta })
     });
 
     const data = await response.json();

@@ -116,11 +116,12 @@ class TradeController extends Controller
     {
         $prompt = $request->input('prompt', '');
         $apiKey = env('GEMINI_API_KEY');
+        $ta = $request->input('ta', []);
 
-        if ($apiKey) {
+        if ($apiKey && strlen($apiKey) > 10) {
             try {
                 $response = Http::withHeaders(['Content-Type' => 'application/json'])
-                    ->timeout(8)
+                    ->timeout(3)
                     ->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey", [
                         'contents' => [['parts' => [['text' => $prompt]]]],
                     ]);
@@ -138,14 +139,29 @@ class TradeController extends Controller
                     }
                 }
             } catch (\Exception $e) {
-                // Ignore exception and use fallback
+                // Ignore exception and use fast fallback
             }
         }
 
-        // Fast smart technical analysis fallback
-        $fallbackText = "Saham BBCA saat ini menunjukkan pergerakan teknikal yang stabil dengan volume transaksi yang memadai. Indikator moving average dan momentum mengindikasikan struktur tren yang terjaga baik di area akumulasi.\n\n" .
-            "Secara jangka pendek, perhatikan area support terdekat dan resistance kunci. Potensi pembentukan pola konsolidasi memberikan peluang entry bertahap bagi investor jangka menengah hingga panjang.\n\n" .
-            "Rekomendasi: Lakukan akumulasi bertahap pada area support utama dengan disiplin memantau garis batas manajemen risiko. Pantau terus konfirmasi pembentukan candle bullish.";
+        // Fast dynamic technical analysis fallback
+        $price   = number_format($ta['cur'] ?? 10250, 0, ',', '.');
+        $chg     = number_format($ta['chgPct'] ?? 0, 2);
+        $rsiVal  = (float) ($ta['rsi'] ?? 52);
+        $rsi     = number_format($rsiVal, 1);
+        $signal  = strtoupper($ta['signal'] ?? 'BUY');
+        $support = number_format($ta['support'] ?? 10000, 0, ',', '.');
+        $resist  = number_format($ta['resist'] ?? 10500, 0, ',', '.');
+
+        $rsiCond = $rsiVal > 70 ? "overbought (jenuh beli)" : ($rsiVal < 30 ? "oversold (jenuh jual)" : "netral terdistribusi dengan baik");
+        $rec = $signal === 'BUY'
+            ? "Lakukan akumulasi beli secara bertahap pada area support Rp $support."
+            : ($signal === 'SELL'
+                ? "Pertimbangkan taktis take profit parsial mendekati area resistance Rp $resist."
+                : "Hold posisi dan amati pembentukan pola breakout di atas Rp $resist.");
+
+        $fallbackText = "Saham BBCA saat ini diperdagangkan pada level Rp $price ($chg%). Indikator RSI (14) berada pada posisi $rsi yang mengindikasikan kondisi $rsiCond.\n\n" .
+            "Secara struktur teknikal harian, pergerakan harga tertahan di atas batas support kunci Rp $support dengan area resistance harian terdekat berada pada Rp $resist. Sinyal teknikal agregat saat ini mengarah pada konfirmasi $signal.\n\n" .
+            "Rekomendasi: $rec Tetapkan pembatasan risiko disiplin di bawah garis support.";
 
         return response()->json([
             'candidates' => [
