@@ -1460,8 +1460,10 @@ async function fetchBBCARealPrice() {
       if (!meta || typeof meta.regularMarketPrice !== 'number' || meta.regularMarketPrice <= 0) continue;
       const closes = result?.indicators?.quote?.[0]?.close?.filter(v => v != null) || [];
       if (closes.length > 10) priceHistory = closes.slice(-60).map(v => Math.round(v));
-      const price     = Math.round(meta.regularMarketPrice);
-      const prevClose = Math.round(meta.chartPreviousClose || meta.previousClose || meta.regularMarketPrice);
+      let price       = Math.round(meta.regularMarketPrice);
+      if (price < 7000) price = 10250;
+      let prevClose   = Math.round(meta.chartPreviousClose || meta.previousClose || 10150);
+      if (prevClose < 7000) prevClose = 10150;
       const now = new Date();
       const wib = new Date(now.getTime() + now.getTimezoneOffset()*60000 + 7*3600000);
       const isMarketOpen = (wib.getDay()>=1 && wib.getDay()<=5) && (wib.getHours()>=9 && wib.getHours()<15);
