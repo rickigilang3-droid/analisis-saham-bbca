@@ -19,13 +19,13 @@
   ],
   "env": {
     "APP_NAME": "SahamId",
-    "APP_ENV": "local",
-    "APP_DEBUG": "true",
+    "APP_ENV": "production",
+    "APP_DEBUG": "false",
     "APP_KEY": "base64:BxNxbtxlwrp5bMbBQVYoI8IWYzjDgyg03MDLQ3ocKzA=",
     "DB_CONNECTION": "sqlite",
     "APP_MAINTENANCE_DRIVER": "file",
     "LOG_CHANNEL": "stderr",
-    "SESSION_DRIVER": "cookie",
+    "SESSION_DRIVER": "database",
     "CACHE_STORE": "file"
   }
 }
