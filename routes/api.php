@@ -20,7 +20,7 @@ Route::get('/events',             [EmitenEventController::class, 'index']);
 Route::get('/discussions',          [DiscussionController::class, 'index']);
 Route::get('/market/valuation',     [MarketController::class, 'valuation']);
 Route::get('/trade/leaderboard',    [TradeController::class, 'leaderboard']);
-Route::get('/announcement',         [AdminApiController::class, 'getAnnouncement']);
+Route::get('/announcement',         [MarketController::class, 'announcement']);
 
 // ── Trading API (User Auth) ──────────────────────────────────────────────
 Route::middleware(['web', 'auth'])->group(function () {

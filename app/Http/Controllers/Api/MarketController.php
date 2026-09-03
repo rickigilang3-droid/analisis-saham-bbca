@@ -58,6 +58,15 @@ class MarketController extends Controller
         ]);
     }
 
+    public function announcement(): JsonResponse
+    {
+        return response()->json([
+            'enabled' => \App\Models\Setting::get('announcement_enabled', '1') === '1',
+            'message' => \App\Models\Setting::get('announcement_message', '🔔 Pengumuman: RUPSLB BBCA & Pembagian Dividen Interim diselenggarakan bulan ini!'),
+            'type'    => \App\Models\Setting::get('announcement_type', 'info'),
+        ]);
+    }
+
     public function backtest(Request $request): JsonResponse
     {
         $symbol = $this->normalizeSymbol($request->get('symbol', 'BBCA'));
