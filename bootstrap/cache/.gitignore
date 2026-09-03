@@ -1,2 +1,4 @@
-*
-!.gitignore
+# Ignore cache files except packages and services
+*.cache
+config.php
+routes-*.php

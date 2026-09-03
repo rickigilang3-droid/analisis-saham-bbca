@@ -8,7 +8,8 @@ define('LARAVEL_START', microtime(true));
 
 try {
     // Setup writable storage directory in /tmp for Vercel Serverless
-    $tmpStorage = '/tmp/storage';
+    $tmp = '/tmp';
+    $tmpStorage = $tmp . '/storage';
     foreach ([
         $tmpStorage . '/framework/views',
         $tmpStorage . '/framework/cache',
@@ -37,11 +38,24 @@ try {
     putenv("VIEW_COMPILED_PATH={$tmpStorage}/framework/views");
     $_ENV['VIEW_COMPILED_PATH'] = "{$tmpStorage}/framework/views";
 
+    // Setup writable bootstrap cache in /tmp for Vercel Serverless
+    $tmpBootstrap = $tmp . '/bootstrap/cache';
+    if (!is_dir($tmpBootstrap)) {
+        @mkdir($tmpBootstrap, 0777, true);
+        if (file_exists(__DIR__ . '/../bootstrap/cache/packages.php')) {
+            @copy(__DIR__ . '/../bootstrap/cache/packages.php', $tmpBootstrap . '/packages.php');
+        }
+        if (file_exists(__DIR__ . '/../bootstrap/cache/services.php')) {
+            @copy(__DIR__ . '/../bootstrap/cache/services.php', $tmpBootstrap . '/services.php');
+        }
+    }
+
     require __DIR__ . '/../vendor/autoload.php';
 
     /** @var Application $app */
     $app = require_once __DIR__ . '/../bootstrap/app.php';
     $app->useStoragePath($tmpStorage);
+    $app->useBootstrapPath($tmp . '/bootstrap');
 
     if ($isFirstInit && !file_exists(__DIR__ . '/../database/database.sqlite')) {
         try {
