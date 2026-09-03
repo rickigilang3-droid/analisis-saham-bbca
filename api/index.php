@@ -37,6 +37,8 @@ try {
     $_ENV['DB_DATABASE'] = $sqlitePath;
     putenv("VIEW_COMPILED_PATH={$tmpStorage}/framework/views");
     $_ENV['VIEW_COMPILED_PATH'] = "{$tmpStorage}/framework/views";
+    putenv("APP_MAINTENANCE_DRIVER=file");
+    $_ENV['APP_MAINTENANCE_DRIVER'] = 'file';
 
     // Redirect all framework cache files to writable /tmp
     putenv("APP_SERVICES_CACHE={$tmp}/services.php");

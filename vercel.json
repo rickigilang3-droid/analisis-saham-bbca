@@ -22,6 +22,7 @@
     "APP_DEBUG": "true",
     "APP_KEY": "base64:BxNxbtxlwrp5bMbBQVYoI8IWYzjDgyg03MDLQ3ocKzA=",
     "DB_CONNECTION": "sqlite",
+    "APP_MAINTENANCE_DRIVER": "file",
     "LOG_CHANNEL": "stderr",
     "SESSION_DRIVER": "cookie",
     "CACHE_STORE": "file"
