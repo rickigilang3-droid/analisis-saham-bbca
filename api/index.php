@@ -23,20 +23,28 @@ try {
     }
 
     // Setup SQLite in /tmp
-    $sqlitePath = '/tmp/database.sqlite';
-    $isFirstInit = !file_exists($sqlitePath);
-    if ($isFirstInit) {
+    $sqlitePath = $tmp . '/database.sqlite';
+    if (!file_exists($sqlitePath)) {
         if (file_exists(__DIR__ . '/../database/database.sqlite')) {
             @copy(__DIR__ . '/../database/database.sqlite', $sqlitePath);
         } else {
             @touch($sqlitePath);
         }
     }
+    @chmod($sqlitePath, 0777);
 
     putenv("DB_DATABASE={$sqlitePath}");
     $_ENV['DB_DATABASE'] = $sqlitePath;
     putenv("VIEW_COMPILED_PATH={$tmpStorage}/framework/views");
     $_ENV['VIEW_COMPILED_PATH'] = "{$tmpStorage}/framework/views";
+
+    // Normalize Vercel REQUEST_URI / PATH_INFO so Laravel routes match properly
+    if (isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO'] === '/api/index.php') {
+        $_SERVER['PATH_INFO'] = '/';
+    }
+    if (isset($_SERVER['REQUEST_URI']) && str_starts_with($_SERVER['REQUEST_URI'], '/api/index.php')) {
+        $_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], strlen('/api/index.php')) ?: '/';
+    }
 
     require __DIR__ . '/../vendor/autoload.php';
 
