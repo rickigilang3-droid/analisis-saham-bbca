@@ -950,7 +950,7 @@ let fetchFailCount = 0;
 let priceHistory  = [];
 let watchlistItems = [];
 let selectedSymbol = 'BBCA';
-let portfolio = { balance: 0, holdings: [], total_value: 0 };
+let portfolio = { balance: {{ (float) (Auth::user()->balance ?? 100000000) }}, holdings: [], lots: {{ (int) (Auth::user()->lots ?? 0) }}, avg_price: {{ (float) (Auth::user()->avg_price ?? 0) }}, total_value: 0 };
 let tradeHistory = [];
 
 const APP_LANG_KEY = 'app-lang';
@@ -2212,6 +2212,7 @@ setInterval(updateRealtimeClock, 1000);
    ========================================================== */
 document.addEventListener('DOMContentLoaded', function () {
   applyLanguage();
+  updatePortfolioUI();
   const finModal = new bootstrap.Modal(document.getElementById('finModal'));
   document.getElementById('btnLaporan').addEventListener('click', () => finModal.show());
 
