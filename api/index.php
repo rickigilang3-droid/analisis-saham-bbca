@@ -70,6 +70,15 @@ try {
     $app = require_once __DIR__ . '/../bootstrap/app.php';
     $app->useStoragePath($tmpStorage);
 
+    // Test Bcrypt hashing
+    try {
+        $testHash = password_hash('test', PASSWORD_BCRYPT, ['cost' => 12]);
+    } catch (\Throwable $err) {
+        http_response_code(500);
+        echo "<h1>password_hash Error</h1><p>" . get_class($err) . ": " . $err->getMessage() . "</p><pre>" . $err->getTraceAsString() . "</pre>";
+        exit;
+    }
+
     $app->handleRequest(Request::capture());
 } catch (\Throwable $e) {
     http_response_code(500);
