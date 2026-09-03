@@ -1876,6 +1876,14 @@ function runTA() {
   document.getElementById('tResist').textContent  = 'Rp ' + fmt(resist);
 
   let bull = 0;
+  if (maBull) bull++;
+  if (rsi > 40 && rsi < 70) bull++;
+  if (macd.hist > 0) bull++;
+  if (stoch < 80) bull++;
+  if (bbPct < 80) bull++;
+
+  const bullPct = Math.round((bull / 5) * 100);
+  const signal  = bullPct >= 60 ? 'BUY' : (bullPct <= 35 ? 'SELL' : 'HOLD');
 
   const sigCfg = {
     BUY:  { icon:'📈', clr:'#10b981', desc:'Sinyal beli kuat — mayoritas indikator bullish',    bg:'rgba(16,185,129,0.08)',  bd:'rgba(16,185,129,0.25)' },
@@ -1883,6 +1891,22 @@ function runTA() {
     HOLD: { icon:'⚖️', clr:'#f59e0b', desc:'Indikator campuran — disarankan tunggu konfirmasi', bg:'rgba(245,158,11,0.07)', bd:'rgba(245,158,11,0.25)' },
   };
   const sc = sigCfg[signal];
+
+  const mainSigBar = document.getElementById('mainSignalBar');
+  if (mainSigBar) {
+    mainSigBar.style.background  = sc.bg;
+    mainSigBar.style.borderColor = sc.bd;
+  }
+  if (document.getElementById('signalIcon')) document.getElementById('signalIcon').textContent = sc.icon;
+  if (document.getElementById('signalMain')) {
+    document.getElementById('signalMain').textContent = signal + ' BBCA';
+    document.getElementById('signalMain').style.color = sc.clr;
+  }
+  if (document.getElementById('signalDesc')) document.getElementById('signalDesc').textContent = sc.desc;
+  if (document.getElementById('signalConf')) {
+    document.getElementById('signalConf').textContent = bullPct + '%';
+    document.getElementById('signalConf').style.color = sc.clr;
+  }
 
   const locale = currentLang === 'en' ? 'en-US' : 'id-ID';
   document.getElementById('updateTime').textContent = t('updateLabel') + ': ' + new Date().toLocaleTimeString(locale) + (currentLang === 'en' ? '' : ' WIB');
