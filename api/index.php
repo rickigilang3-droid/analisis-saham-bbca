@@ -52,6 +52,11 @@ try {
     $app = require_once __DIR__ . '/../bootstrap/app.php';
     $app->useStoragePath($tmpStorage);
 
+    // Render detailed exception directly to browser for debugging
+    $app->make(\Illuminate\Contracts\Debug\ExceptionHandler::class)->renderable(function (\Throwable $e) {
+        return response("<h1>Laravel Exception</h1><p><strong>" . get_class($e) . ": " . htmlspecialchars($e->getMessage()) . "</strong></p><p>" . htmlspecialchars($e->getFile()) . ":" . $e->getLine() . "</p><pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>", 500);
+    });
+
     $app->handleRequest(Request::capture());
 } catch (\Throwable $e) {
     http_response_code(500);
