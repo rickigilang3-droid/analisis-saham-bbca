@@ -22,11 +22,14 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminOnly::class,
         ]);
 
-        // 3. KUNCI UTAMA: Bypass CSRF untuk route AI
-        // Biar fetch POST dari dashboard nggak "Error 419" atau "No Response"
+        // 3. KUNCI UTAMA: Bypass CSRF untuk route auth & API di serverless Vercel
         $middleware->validateCsrfTokens(except: [
-            'api/ai/analyze', 
-            'api/trade/*', // Jaga-jaga kalau trade juga bermasalah
+            'api/*',
+            'login',
+            'register',
+            'logout',
+            'forgot-password',
+            'reset-password',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

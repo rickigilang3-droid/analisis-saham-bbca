@@ -18,8 +18,9 @@
     }
   ],
   "env": {
+    "APP_NAME": "SahamId",
     "APP_ENV": "production",
-    "APP_DEBUG": "true",
+    "APP_DEBUG": "false",
     "APP_KEY": "base64:BxNxbtxlwrp5bMbBQVYoI8IWYzjDgyg03MDLQ3ocKzA=",
     "DB_CONNECTION": "sqlite",
     "APP_MAINTENANCE_DRIVER": "file",
