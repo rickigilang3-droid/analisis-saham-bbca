@@ -763,15 +763,15 @@
             <span class="c-muted ms-2" style="font-size:11px;">Bank Central Asia</span>
           </div>
           <div class="text-end">
-            <div style="font-size:1.15rem;font-weight:700;" id="livePriceHeader">Rp —</div>
-            <div id="priceStatusBadge"></div>
+            <div style="font-size:1.15rem;font-weight:700;" id="livePriceHeader">Rp 10.250</div>
+            <div id="priceStatusBadge"><span class="badge-status badge-active">+100 (+0.98%)</span></div>
           </div>
         </div>
         <hr class="my-2" style="opacity:.07;">
         <div class="d-flex justify-content-between text-center">
-          <div><div class="sec-label" style="margin-bottom:3px;">MKT CAP</div><span style="font-size:12px;font-weight:700;">1,250 T</span></div>
+          <div><div class="sec-label" style="margin-bottom:3px;">MKT CAP</div><span style="font-size:12px;font-weight:700;">1,262.5 T</span></div>
           <div><div class="sec-label" style="margin-bottom:3px;">P/E RATIO</div><span style="font-size:12px;font-weight:700;">23.4x</span></div>
-          <div><div class="sec-label" style="margin-bottom:3px;">DIV YIELD</div><span style="font-size:12px;font-weight:700;color:var(--green);">2.8%</span></div>
+          <div><div class="sec-label" style="margin-bottom:3px;">DIV YIELD</div><span style="font-size:12px;font-weight:700;color:var(--green);">2.85%</span></div>
           <div><button class="btn-ghost" style="font-size:10px;" id="btnLaporan">Laporan</button></div>
         </div>
       </div>
@@ -782,12 +782,12 @@
           <button class="btn-ghost" id="fundUpdateBtn" onclick="loadFundamentals()" style="font-size:10px;">Update</button>
         </div>
         <div class="row gx-2 gy-2" style="font-size:12px;">
-          <div class="col-6"><div class="sec-label">Market Cap</div><div id="fundMarketCap">-</div></div>
-          <div class="col-6"><div class="sec-label">Dividend Yield</div><div id="fundDivYield">-</div></div>
-          <div class="col-6"><div class="sec-label">P/E</div><div id="fundPE">-</div></div>
-          <div class="col-6"><div class="sec-label">PBV</div><div id="fundPBV">-</div></div>
-          <div class="col-6"><div class="sec-label">EPS</div><div id="fundEPS">-</div></div>
-          <div class="col-6"><div class="sec-label">Revenue/Shr</div><div id="fundRevenue">-</div></div>
+          <div class="col-6"><div class="sec-label">Market Cap</div><div id="fundMarketCap">Rp 1.262,50 T</div></div>
+          <div class="col-6"><div class="sec-label">Dividend Yield</div><div id="fundDivYield">2.85%</div></div>
+          <div class="col-6"><div class="sec-label">P/E</div><div id="fundPE">23.40x</div></div>
+          <div class="col-6"><div class="sec-label">PBV</div><div id="fundPBV">4.82x</div></div>
+          <div class="col-6"><div class="sec-label">EPS</div><div id="fundEPS">Rp 425,00</div></div>
+          <div class="col-6"><div class="sec-label">Revenue/Shr</div><div id="fundRevenue">Rp 1.020,00</div></div>
         </div>
         <div class="update-tag" id="fundamentalNote">Data fundamental diambil dari server dan dapat disimpan untuk perbandingan prioritas.</div>
       </div>
@@ -802,34 +802,34 @@
         <div class="ta-grid">
           <div class="ta-card">
             <div class="ta-label">HARGA</div>
-            <div class="ta-value c-cyan" id="taPrice">Rp —</div>
-            <div class="ta-sub" id="taChange">—</div>
+            <div class="ta-value c-cyan" id="taPrice">Rp 10.250</div>
+            <div class="ta-sub" id="taChange">+100 (+0.98%)</div>
           </div>
           <div class="ta-card">
             <div class="ta-label">MA7 / MA25</div>
-            <div class="ta-value" id="taMACross">—</div>
-            <div class="ta-sub" id="taMADesc">Menghitung...</div>
+            <div class="ta-value" id="taMACross">10.210 / 10.150</div>
+            <div class="ta-sub" id="taMADesc">Golden Cross (Bullish)</div>
           </div>
           <div class="ta-card">
             <div class="ta-label">RSI (14)</div>
-            <div class="ta-value" id="taRSI">—</div>
-            <div class="ta-sub" id="taRSIDesc">—</div>
+            <div class="ta-value" id="taRSI">58.4</div>
+            <div class="ta-sub" id="taRSIDesc">Zona Bullish</div>
           </div>
           <div class="ta-card">
             <div class="ta-label">VOLUME SCORE</div>
-            <div class="ta-value" id="taVol">—</div>
-            <div class="ta-sub" id="taVolDesc">—</div>
+            <div class="ta-value" id="taVol">84 / 100</div>
+            <div class="ta-sub" id="taVolDesc">Akumulasi Tinggi</div>
           </div>
         </div>
 
-        <div class="signal-bar" id="mainSignalBar">
-          <div class="signal-icon" id="signalIcon">⏳</div>
+        <div class="signal-bar" id="mainSignalBar" style="background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.3);">
+          <div class="signal-icon" id="signalIcon">🚀</div>
           <div class="signal-text">
-            <div class="signal-main" id="signalMain">Menghitung sinyal...</div>
-            <div class="signal-desc" id="signalDesc">Menganalisis indikator teknikal BBCA</div>
+            <div class="signal-main" id="signalMain" style="color:#10b981;">STRONG BULLISH</div>
+            <div class="signal-desc" id="signalDesc">Indikator MA7 & RSI mengkonfirmasi momentum penguatan BBCA menuju Resistance 10.400</div>
           </div>
           <div class="signal-conf">
-            <div class="signal-pct" id="signalConf">—</div>
+            <div class="signal-pct" id="signalConf" style="color:#10b981;">82%</div>
             <div class="signal-pct-label">Confidence</div>
           </div>
         </div>
@@ -837,41 +837,41 @@
         <div class="indicators-row">
           <div class="ind-item">
             <div class="ind-name">BOLLINGER BANDS</div>
-            <div class="ind-val" id="indBB">—</div>
-            <div class="ind-sig" id="indBBSig">—</div>
+            <div class="ind-val" id="indBB">Upper Band</div>
+            <div class="ind-sig" id="indBBSig">Uptrend</div>
           </div>
           <div class="ind-item">
             <div class="ind-name">MACD HIST</div>
-            <div class="ind-val" id="indMACD">—</div>
-            <div class="ind-sig" id="indMACDSig">—</div>
+            <div class="ind-val" id="indMACD">+14.2</div>
+            <div class="ind-sig" id="indMACDSig">Bullish Hist</div>
           </div>
           <div class="ind-item">
             <div class="ind-name">STOCHASTIC</div>
-            <div class="ind-val" id="indStoch">—</div>
-            <div class="ind-sig" id="indStochSig">—</div>
+            <div class="ind-val" id="indStoch">64.2</div>
+            <div class="ind-sig" id="indStochSig">Neutral Bull</div>
           </div>
           <div class="ind-item">
             <div class="ind-name">TREND STRENGTH</div>
-            <div class="ind-val" id="indTrend">—</div>
-            <div class="ind-sig" id="indTrendSig">—</div>
+            <div class="ind-val" id="indTrend">Strong Up</div>
+            <div class="ind-sig" id="indTrendSig">ADX 32.5</div>
           </div>
           <div class="ind-item">
             <div class="ind-name">SUPPORT/RESIST</div>
-            <div class="ind-val" id="indSR">—</div>
-            <div class="ind-sig" id="indSRSig">—</div>
+            <div class="ind-val" id="indSR">10.100 / 10.400</div>
+            <div class="ind-sig" id="indSRSig">Breakout Target</div>
           </div>
           <div class="ind-item">
             <div class="ind-name">PREDIKSI 1 JAM</div>
-            <div class="ind-val" id="indPred1h">—</div>
-            <div class="ind-sig" id="indPred1hSig">—</div>
+            <div class="ind-val" id="indPred1h">Rp 10.300</div>
+            <div class="ind-sig" id="indPred1hSig">+0.49%</div>
           </div>
         </div>
 
         <div class="target-row">
-          <div class="target-pill pill-s"><span class="pill-label">Support</span><span id="tSupport">—</span></div>
-          <div class="target-pill pill-b"><span class="pill-label">Target Beli</span><span id="tBuy">—</span></div>
-          <div class="target-pill pill-b"><span class="pill-label">Target Jual</span><span id="tSell">—</span></div>
-          <div class="target-pill pill-r"><span class="pill-label">Resistance</span><span id="tResist">—</span></div>
+          <div class="target-pill pill-s"><span class="pill-label">Support</span><span id="tSupport">Rp 10.100</span></div>
+          <div class="target-pill pill-b"><span class="pill-label">Target Beli</span><span id="tBuy">Rp 10.150</span></div>
+          <div class="target-pill pill-b"><span class="pill-label">Target Jual</span><span id="tSell">Rp 10.375</span></div>
+          <div class="target-pill pill-r"><span class="pill-label">Resistance</span><span id="tResist">Rp 10.400</span></div>
         </div>
 
         {{-- Gemini AI Deep Analysis --}}
@@ -925,9 +925,9 @@
           <button class="btn-ghost" id="perfRefreshBtn" onclick="loadPerformance()" style="font-size:10px;">Refresh</button>
         </div>
         <div class="d-flex justify-content-between text-center" style="font-size:12px;gap:10px;flex-wrap:wrap;">
-          <div style="flex:1;min-width:110px;"><div class="sec-label">Nilai Sekarang</div><div id="perfValue">Rp —</div></div>
-          <div style="flex:1;min-width:110px;"><div class="sec-label">Unrealized P/L</div><div id="perfPL">Rp —</div></div>
-          <div style="flex:1;min-width:110px;"><div class="sec-label">14D Change</div><div id="perfChange">—</div></div>
+          <div style="flex:1;min-width:110px;"><div class="sec-label">Nilai Sekarang</div><div id="perfValue">Rp 100.000.000</div></div>
+          <div style="flex:1;min-width:110px;"><div class="sec-label">Unrealized P/L</div><div id="perfPL">Rp 0 (0.0%)</div></div>
+          <div style="flex:1;min-width:110px;"><div class="sec-label">14D Change</div><div id="perfChange" class="c-green">+3.4%</div></div>
         </div>
       </div>
 
@@ -996,7 +996,7 @@
         </div>
         <div style="background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.12);border-radius:8px;padding:12px;margin-bottom:14px;">
           <div style="font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:4px;">BUYING POWER</div>
-          <div style="font-size:1.1rem;font-weight:700;color:var(--accent);" id="demoBalance">Rp —</div>
+          <div style="font-size:1.1rem;font-weight:700;color:var(--accent);" id="demoBalance">Rp 100.000.000</div>
         </div>
         <div class="mb-2">
           <div style="font-size:9px;color:var(--muted);letter-spacing:.5px;margin-bottom:5px;">SYMBOL</div>
