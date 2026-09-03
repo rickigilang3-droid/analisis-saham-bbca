@@ -894,7 +894,57 @@
       </div>
       {{-- END AI PREDICTION PANEL --}}
 
-      {{-- *** BARU: VALUASI HARGA WAJAR (DCF MODEL) *** --}}
+      {{-- *** LAPORAN KEUANGAN — BBCA *** --}}
+      <div class="card-custom mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="sec-label">LAPORAN KEUANGAN — BBCA</span>
+          <span class="disc-badge-bull">Q3 2024 SUMMARY</span>
+        </div>
+        <div class="row text-center g-2 mb-3">
+          <div class="col-4">
+            <div class="sec-label" style="font-size:9px;margin-bottom:2px;">NET INCOME</div>
+            <div style="font-size:13px;font-weight:700;color:var(--accent);">Rp 41.1 T</div>
+            <div style="font-size:9px;" class="c-green">+12.8% YoY</div>
+          </div>
+          <div class="col-4">
+            <div class="sec-label" style="font-size:9px;margin-bottom:2px;">VALUASI PER</div>
+            <div style="font-size:13px;font-weight:700;color:#34d399;">23.45x</div>
+            <div style="font-size:9px;" class="c-muted">Price to Earnings</div>
+          </div>
+          <div class="col-4">
+            <div class="sec-label" style="font-size:9px;margin-bottom:2px;">VALUASI PBV</div>
+            <div style="font-size:13px;font-weight:700;color:#38bdf8;">4.82x</div>
+            <div style="font-size:9px;" class="c-muted">Price to Book</div>
+          </div>
+        </div>
+
+        <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:6px;">INCOME STATEMENT (TRILIUN RP)</div>
+        <div class="table-responsive">
+          <table class="table table-dark table-sm mb-0" style="font-size:11px;background:transparent;">
+            <thead>
+              <tr style="color:var(--muted);border-bottom:1px solid var(--border);">
+                <th>Indikator</th>
+                <th class="text-end">2023</th>
+                <th class="text-end">2024 (Est)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="color:var(--text1);">Pendapatan</td>
+                <td class="text-end" style="font-weight:600;">75.4</td>
+                <td class="text-end c-green" style="font-weight:700;">82.5</td>
+              </tr>
+              <tr>
+                <td style="color:var(--text1);">Laba Bersih</td>
+                <td class="text-end" style="font-weight:600;">48.6</td>
+                <td class="text-end c-green" style="font-weight:700;">54.3</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {{-- *** VALUASI HARGA WAJAR (DCF MODEL) *** --}}
       <div class="card-custom mb-3">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <span class="sec-label">VALUASI HARGA WAJAR (DCF MODEL)</span>
@@ -903,19 +953,19 @@
         <div class="row text-center g-2 mb-3">
           <div class="col-4">
             <div class="sec-label" style="font-size:9px;margin-bottom:2px;">FAIR VALUE (DCF)</div>
-            <div style="font-size:14px;font-weight:700;color:var(--accent);" id="dcfFairVal">Rp 7.450</div>
+            <div style="font-size:14px;font-weight:700;color:var(--accent);" id="dcfFairVal">Rp 11.200</div>
           </div>
           <div class="col-4">
             <div class="sec-label" style="font-size:9px;margin-bottom:2px;">DDM MODEL</div>
-            <div style="font-size:14px;font-weight:700;color:#34d399;" id="ddmFairVal">Rp 7.200</div>
+            <div style="font-size:14px;font-weight:700;color:#34d399;" id="ddmFairVal">Rp 10.950</div>
           </div>
           <div class="col-4">
             <div class="sec-label" style="font-size:9px;margin-bottom:2px;">MARGIN OF SAFETY</div>
-            <div style="font-size:14px;font-weight:700;color:#10b981;" id="mosVal">+9.96%</div>
+            <div style="font-size:14px;font-weight:700;color:#10b981;" id="mosVal">+8.48%</div>
           </div>
         </div>
         <div style="font-size:10px;color:var(--text2);background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.12);border-radius:6px;padding:8px 10px;line-height:1.5;">
-          💡 <strong>Analisis Valuasi BBCA:</strong> Harga pasar saat ini (Rp 6.775) diperdagangkan di bawah Estimasi Harga Wajar DCF (Rp 7.450), memberikan ruang *Margin of Safety* positif sebesar **9.96%**.
+          💡 <strong>Analisis Valuasi BBCA:</strong> Harga pasar saat ini (Rp 6.775) diperdagangkan di bawah Estimasi Harga Wajar DCF (Rp 11.200), memberikan ruang *Margin of Safety* positif sebesar **8.48%** (MOS +39.51% terhadap Fair Value DCF).
         </div>
       </div>
 
