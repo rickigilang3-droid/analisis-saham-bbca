@@ -1,0 +1,9 @@
+.env
+.env.*
+tests/
+node_modules/
+.git
+.github
+fly.toml
+Dockerfile
+render.yaml
