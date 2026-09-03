@@ -763,8 +763,8 @@
             <span class="c-muted ms-2" style="font-size:11px;">Bank Central Asia</span>
           </div>
           <div class="text-end">
-            <div style="font-size:1.15rem;font-weight:700;" id="livePriceHeader">Rp 10.250</div>
-            <div id="priceStatusBadge"><span class="badge-status badge-active">+100 (+0.98%)</span></div>
+            <div style="font-size:1.15rem;font-weight:700;" id="livePriceHeader">Rp 6.775</div>
+            <div id="priceStatusBadge"><span class="badge-status badge-active">+100 (+1,50%)</span></div>
           </div>
         </div>
         <hr class="my-2" style="opacity:.07;">
@@ -802,12 +802,12 @@
         <div class="ta-grid">
           <div class="ta-card">
             <div class="ta-label">HARGA</div>
-            <div class="ta-value c-cyan" id="taPrice">Rp 10.250</div>
-            <div class="ta-sub" id="taChange">+100 (+0.98%)</div>
+            <div class="ta-value c-cyan" id="taPrice">Rp 6.775</div>
+            <div class="ta-sub" id="taChange">+100 (+1,50%)</div>
           </div>
           <div class="ta-card">
             <div class="ta-label">MA7 / MA25</div>
-            <div class="ta-value" id="taMACross">10.210 / 10.150</div>
+            <div class="ta-value" id="taMACross">6.720 / 6.650</div>
             <div class="ta-sub" id="taMADesc">Golden Cross (Bullish)</div>
           </div>
           <div class="ta-card">
@@ -826,7 +826,7 @@
           <div class="signal-icon" id="signalIcon">🚀</div>
           <div class="signal-text">
             <div class="signal-main" id="signalMain" style="color:#10b981;">STRONG BULLISH</div>
-            <div class="signal-desc" id="signalDesc">Indikator MA7 & RSI mengkonfirmasi momentum penguatan BBCA menuju Resistance 10.400</div>
+            <div class="signal-desc" id="signalDesc">Indikator MA7 & RSI mengkonfirmasi momentum penguatan BBCA menuju Resistance 6.900</div>
           </div>
           <div class="signal-conf">
             <div class="signal-pct" id="signalConf" style="color:#10b981;">82%</div>
@@ -838,10 +838,10 @@
           <div class="ind-item">
             <div class="ind-name">BOLLINGER BANDS</div>
             <div class="ind-val" id="indBB">Upper Band</div>
-            <div class="ind-sig" id="indBBSig">Uptrend</div>
+            <div class="ind-sig" id="indBBSig">Bullish Band</div>
           </div>
           <div class="ind-item">
-            <div class="ind-name">MACD HIST</div>
+            <div class="ind-name">MACD HISTOGRAM</div>
             <div class="ind-val" id="indMACD">+14.2</div>
             <div class="ind-sig" id="indMACDSig">Bullish Hist</div>
           </div>
@@ -857,21 +857,21 @@
           </div>
           <div class="ind-item">
             <div class="ind-name">SUPPORT/RESIST</div>
-            <div class="ind-val" id="indSR">10.100 / 10.400</div>
+            <div class="ind-val" id="indSR">6.600 / 6.900</div>
             <div class="ind-sig" id="indSRSig">Breakout Target</div>
           </div>
           <div class="ind-item">
             <div class="ind-name">PREDIKSI 1 JAM</div>
-            <div class="ind-val" id="indPred1h">Rp 10.300</div>
-            <div class="ind-sig" id="indPred1hSig">+0.49%</div>
+            <div class="ind-val" id="indPred1h">Rp 6.800</div>
+            <div class="ind-sig c-green" id="indPred1hSig">▲ +25.00</div>
           </div>
         </div>
 
         <div class="target-row">
-          <div class="target-pill pill-s"><span class="pill-label">Support</span><span id="tSupport">Rp 10.100</span></div>
-          <div class="target-pill pill-b"><span class="pill-label">Target Beli</span><span id="tBuy">Rp 10.150</span></div>
-          <div class="target-pill pill-b"><span class="pill-label">Target Jual</span><span id="tSell">Rp 10.375</span></div>
-          <div class="target-pill pill-r"><span class="pill-label">Resistance</span><span id="tResist">Rp 10.400</span></div>
+          <div class="target-pill pill-s"><span class="pill-label">Support</span><span id="tSupport">Rp 6.600</span></div>
+          <div class="target-pill pill-b"><span class="pill-label">Target Beli</span><span id="tBuy">Rp 6.650</span></div>
+          <div class="target-pill pill-b"><span class="pill-label">Target Jual</span><span id="tSell">Rp 6.850</span></div>
+          <div class="target-pill pill-r"><span class="pill-label">Resistance</span><span id="tResist">Rp 6.900</span></div>
         </div>
 
         {{-- Gemini AI Deep Analysis --}}
@@ -903,19 +903,19 @@
         <div class="row text-center g-2 mb-3">
           <div class="col-4">
             <div class="sec-label" style="font-size:9px;margin-bottom:2px;">FAIR VALUE (DCF)</div>
-            <div style="font-size:14px;font-weight:700;color:var(--accent);" id="dcfFairVal">Rp 11.200</div>
+            <div style="font-size:14px;font-weight:700;color:var(--accent);" id="dcfFairVal">Rp 7.450</div>
           </div>
           <div class="col-4">
             <div class="sec-label" style="font-size:9px;margin-bottom:2px;">DDM MODEL</div>
-            <div style="font-size:14px;font-weight:700;color:#34d399;" id="ddmFairVal">Rp 10.950</div>
+            <div style="font-size:14px;font-weight:700;color:#34d399;" id="ddmFairVal">Rp 7.200</div>
           </div>
           <div class="col-4">
             <div class="sec-label" style="font-size:9px;margin-bottom:2px;">MARGIN OF SAFETY</div>
-            <div style="font-size:14px;font-weight:700;color:#10b981;" id="mosVal">+9.27%</div>
+            <div style="font-size:14px;font-weight:700;color:#10b981;" id="mosVal">+9.96%</div>
           </div>
         </div>
         <div style="font-size:10px;color:var(--text2);background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.12);border-radius:6px;padding:8px 10px;line-height:1.5;">
-          💡 <strong>Analisis Valuasi BBCA:</strong> Harga pasar saat ini (Rp 10.250) diperdagangkan di bawah Estimasi Harga Wajar DCF (Rp 11.200), memberikan ruang *Margin of Safety* positif sebesar **9.27%**.
+          💡 <strong>Analisis Valuasi BBCA:</strong> Harga pasar saat ini (Rp 6.775) diperdagangkan di bawah Estimasi Harga Wajar DCF (Rp 7.450), memberikan ruang *Margin of Safety* positif sebesar **9.96%**.
         </div>
       </div>
 
@@ -1004,7 +1004,7 @@
         </div>
         <div class="mb-2">
           <div style="font-size:9px;color:var(--muted);letter-spacing:.5px;margin-bottom:5px;">HARGA (RP)</div>
-          <input type="number" id="inputPrice" class="form-control-custom text-end" value="10250">
+          <input type="number" id="inputPrice" class="form-control-custom text-end" value="6775">
         </div>
         <div class="mb-3">
           <div style="font-size:9px;color:var(--muted);letter-spacing:.5px;margin-bottom:5px;">LOT</div>
@@ -1461,9 +1461,9 @@ async function fetchBBCARealPrice() {
       const closes = result?.indicators?.quote?.[0]?.close?.filter(v => v != null) || [];
       if (closes.length > 10) priceHistory = closes.slice(-60).map(v => Math.round(v));
       let price       = Math.round(meta.regularMarketPrice);
-      if (price < 7000) price = 10250;
-      let prevClose   = Math.round(meta.chartPreviousClose || meta.previousClose || 10150);
-      if (prevClose < 7000) prevClose = 10150;
+      if (price <= 0) price = 6775;
+      let prevClose   = Math.round(meta.chartPreviousClose || meta.previousClose || 6675);
+      if (prevClose <= 0) prevClose = 6675;
       const now = new Date();
       const wib = new Date(now.getTime() + now.getTimezoneOffset()*60000 + 7*3600000);
       const isMarketOpen = (wib.getDay()>=1 && wib.getDay()<=5) && (wib.getHours()>=9 && wib.getHours()<15);
@@ -1484,7 +1484,7 @@ async function updatePrice() {
     fetchFailCount     = 0;
   } else {
     fetchFailCount++;
-    if (currentPrice === 0) { currentPrice = 10250; previousClose = 10200; }
+    if (currentPrice === 0) { currentPrice = 6775; previousClose = 6675; }
     if (fetchFailCount > 3) {
       priceStatus   = 'simulation';
       currentPrice += Math.floor(Math.random() * 51) - 25;

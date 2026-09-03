@@ -33,10 +33,10 @@ class MarketController extends Controller
     public function valuation(Request $request): JsonResponse
     {
         $symbol = $this->normalizeSymbol($request->get('symbol', 'BBCA'));
-        $currentPrice = 10250;
+        $currentPrice = 6775;
 
-        $dcfFairValue = 11200;
-        $ddmFairValue = 10950;
+        $dcfFairValue = 7450;
+        $ddmFairValue = 7200;
         $marginOfSafety = round((($dcfFairValue - $currentPrice) / $dcfFairValue) * 100, 2);
 
         $quarterly = [
@@ -247,37 +247,37 @@ class MarketController extends Controller
                 }
             }
 
-            $latestClose = $latestClose ?? 10250;
+            $latestClose = $latestClose ?? 6775;
 
             return [
                 'price' => round($latestClose, 3),
-                'previous_close' => round((float) ($meta['chartPreviousClose'] ?? $meta['previousClose'] ?? 0), 3),
-                'open' => round((float) ($meta['regularMarketOpen'] ?? 0), 3),
-                'high' => round((float) ($meta['regularMarketDayHigh'] ?? 0), 3),
-                'low' => round((float) ($meta['regularMarketDayLow'] ?? 0), 3),
-                'market_cap' => $this->safeNumber($meta['marketCap'] ?? 0),
+                'previous_close' => round((float) ($meta['chartPreviousClose'] ?? $meta['previousClose'] ?? 6675), 3),
+                'open' => round((float) ($meta['regularMarketOpen'] ?? 6700), 3),
+                'high' => round((float) ($meta['regularMarketDayHigh'] ?? 6800), 3),
+                'low' => round((float) ($meta['regularMarketDayLow'] ?? 6625), 3),
+                'market_cap' => $this->safeNumber($meta['marketCap'] ?? 835000000000000),
                 'currency' => $meta['currency'] ?? 'IDR',
             ];
         } catch (\Exception $e) {
             if (str_contains(strtolower($symbol), 'bbca')) {
                 return [
-                    'price' => 10250,
-                    'previous_close' => 10150,
-                    'open' => 10200,
-                    'high' => 10350,
-                    'low' => 10150,
-                    'market_cap' => 1262500000000000,
+                    'price' => 6775,
+                    'previous_close' => 6675,
+                    'open' => 6700,
+                    'high' => 6800,
+                    'low' => 6625,
+                    'market_cap' => 835000000000000,
                     'currency' => 'IDR',
                 ];
             }
 
             return [
-                'price' => 10250,
-                'previous_close' => 10150,
-                'open' => 10200,
-                'high' => 10350,
-                'low' => 10150,
-                'market_cap' => 1262500000000000,
+                'price' => 6775,
+                'previous_close' => 6675,
+                'open' => 6700,
+                'high' => 6800,
+                'low' => 6625,
+                'market_cap' => 835000000000000,
                 'currency' => 'IDR',
             ];
         }
