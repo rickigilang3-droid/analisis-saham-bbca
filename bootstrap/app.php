@@ -24,14 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // 3. KUNCI UTAMA: Bypass CSRF untuk route auth & API di serverless Vercel
         $middleware->validateCsrfTokens(except: [
-            'api/*',
             'login',
             'register',
             'logout',
-            'forgot-password',
-            'reset-password',
-        ]);
-    })
-    ->withExceptions(function (Exceptions $exceptions) {
-        //
     })->create();
