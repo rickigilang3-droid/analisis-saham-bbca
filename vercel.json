@@ -13,6 +13,10 @@
       "dest": "/$1$2"
     },
     {
+      "src": "/clear",
+      "dest": "/clear-cookies.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/api/index.php"
     }
