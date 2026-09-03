@@ -56,10 +56,10 @@ try {
         @copy(__DIR__ . '/../bootstrap/cache/packages.php', "{$tmp}/packages.php");
     }
 
-    // Normalize Vercel REQUEST_URI / PATH_INFO so Laravel routes match properly
-    if (isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO'] === '/api/index.php') {
-        $_SERVER['PATH_INFO'] = '/';
-    }
+    // Normalize Vercel REQUEST_URI / SCRIPT_NAME so Laravel routes match properly
+    $_SERVER['SCRIPT_NAME'] = '/index.php';
+    $_SERVER['PHP_SELF'] = '/index.php';
+    unset($_SERVER['PATH_INFO']);
     if (isset($_SERVER['REQUEST_URI']) && str_starts_with($_SERVER['REQUEST_URI'], '/api/index.php')) {
         $_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], strlen('/api/index.php')) ?: '/';
     }
