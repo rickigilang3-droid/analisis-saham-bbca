@@ -307,6 +307,65 @@
   .ai-para:last-child { margin-bottom:0; }
   .update-tag { font-size:9px; color:var(--muted); text-align:right; margin-top:8px; }
 
+  /* COMMUNITY DISCUSSION MODS */
+  .btn-tab-disc {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 10px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .btn-tab-disc:hover, .btn-tab-disc.active {
+    background: rgba(6, 182, 212, 0.12);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .disc-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #06b6d4, #3b82f6);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .disc-badge-bull {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    padding: 2px 7px;
+    border-radius: 12px;
+    font-size: 9px;
+    font-weight: 600;
+  }
+  .disc-badge-bear {
+    background: rgba(244, 63, 94, 0.15);
+    color: #f43f5e;
+    border: 1px solid rgba(244, 63, 94, 0.3);
+    padding: 2px 7px;
+    border-radius: 12px;
+    font-size: 9px;
+    font-weight: 600;
+  }
+  .disc-badge-neu {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    padding: 2px 7px;
+    border-radius: 12px;
+    font-size: 9px;
+    font-weight: 600;
+  }
+
   /* LIGHT MODE */
   .light-mode {
     background: #eef3f9; color: #172033;
@@ -842,24 +901,45 @@
         </div>
       </div>
 
-      {{-- *** BARU: DISKUSI KOMUNITAS *** --}}
-      <div class="card-custom" style="min-height:400px;display:flex;flex-direction:column;">
+      {{-- *** BARU: DISKUSI KOMUNITAS MODERN *** --}}
+      <div class="card-custom" style="min-height:450px;display:flex;flex-direction:column;">
         <div class="d-flex justify-content-between align-items-center mb-2">
-          <span class="sec-label" id="communityLabel">DISKUSI KOMUNITAS — BBCA</span>
-          <button class="btn-ghost" id="discussionToggleBtn" style="font-size:10px;" onclick="toggleDiscussionForm()">+ Post</button>
+          <div>
+            <span class="sec-label" id="communityLabel">DISKUSI KOMUNITAS — BBCA</span>
+            <div style="font-size:10px;color:var(--muted);margin-top:-6px;margin-bottom:4px;">Forum Opini & Analisis Investor Realtime</div>
+          </div>
+          <button class="btn-ai" id="discussionToggleBtn" style="padding:4px 12px;font-size:11px;" onclick="toggleDiscussionForm()">+ Buat Post</button>
         </div>
 
-        {{-- Form Buat Diskusi (hidden by default) --}}
-        <div id="discussionForm" style="display:none;margin-bottom:12px;">
-          <input type="text" id="discTitle" class="form-control-custom mb-2" placeholder="Judul diskusi...">
-          <textarea id="discBody" class="form-control-custom mb-2" rows="3"
-            style="resize:vertical;" placeholder="Tulis pendapat kamu tentang BBCA..."></textarea>
-          <button class="btn-ai" id="discussionSubmitBtn" onclick="postDiscussion()">Kirim Diskusi</button>
+        {{-- Filter Tabs --}}
+        <div class="d-flex gap-2 my-2 pb-2" style="border-bottom:1px solid var(--border);overflow-x:auto;">
+          <button class="btn-tab-disc active" onclick="filterDiscussions('ALL', this)">🔥 Semua Topik</button>
+          <button class="btn-tab-disc" onclick="filterDiscussions('BULLISH', this)">📈 Bullish</button>
+          <button class="btn-tab-disc" onclick="filterDiscussions('BEARISH', this)">📉 Bearish</button>
+        </div>
+
+        {{-- Form Buat Diskusi --}}
+        <div id="discussionForm" style="display:none;margin-bottom:14px;padding:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;">
+          <div style="font-size:11px;font-weight:600;color:var(--accent);margin-bottom:8px;">📝 BAGIKAN OPINI & ANALISIS KAMU</div>
+          <input type="text" id="discTitle" class="form-control-custom mb-2" placeholder="Judul topik diskusi (contoh: Breakout BBCA ke 10.500)...">
+          <textarea id="discBody" class="form-control-custom mb-2" rows="3" style="resize:vertical;" placeholder="Tulis analisis teknikal / fundamental kamu..."></textarea>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+              <span style="font-size:10px;color:var(--muted);">Sentimen:</span>
+              <select id="discSentiment" class="form-control-custom" style="padding:2px 8px;font-size:11px;width:auto;">
+                <option value="BULLISH">📈 Bullish</option>
+                <option value="NEUTRAL">⚖️ Neutral</option>
+                <option value="BEARISH">📉 Bearish</option>
+              </select>
+            </div>
+            <button class="btn-buy" id="discussionSubmitBtn" style="padding:5px 14px;font-size:11px;" onclick="postDiscussion()">Kirim Post</button>
+          </div>
         </div>
 
         {{-- List Diskusi --}}
-        <div id="discussionList" style="flex-grow:1;overflow-y:auto;max-height:500px;">
-          <div class="text-center c-muted mt-3" id="discussionLoadingText" style="font-size:11px;">Memuat diskusi...</div>
+        <div id="discussionList" style="flex-grow:1;overflow-y:auto;max-height:520px;padding-right:4px;">
+          <div class="text-center c-muted mt-4" id="discussionLoadingText" style="font-size:11px;">Memuat diskusi komunitas...</div>
         </div>
       </div>
       {{-- *** END DISKUSI KOMUNITAS *** --}}
@@ -1994,40 +2074,81 @@ async function loadDiscussions() {
   }
 }
 
+let allDiscussions = [];
+let currentDiscFilter = 'ALL';
+
+function filterDiscussions(sentiment, btn) {
+  currentDiscFilter = sentiment;
+  document.querySelectorAll('.btn-tab-disc').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderDiscussions(allDiscussions);
+}
+
 function renderDiscussions(list) {
+  allDiscussions = list;
   const el = document.getElementById('discussionList');
-  if (!list.length) {
-    el.innerHTML = '<div class="text-center c-muted mt-3" style="font-size:11px;">' + t('noDiscussion') + '</div>';
+  let filtered = list;
+  if (currentDiscFilter !== 'ALL') {
+    filtered = list.filter(d => (d.sentiment || 'BULLISH') === currentDiscFilter);
+  }
+
+  if (!filtered.length) {
+    el.innerHTML = '<div class="text-center c-muted mt-4" style="font-size:11px;">Tidak ada postingan dalam kategori ini.</div>';
     return;
   }
-  el.innerHTML = list.map(d => {
+
+  el.innerHTML = filtered.map(d => {
+    const userObj = d.user || {};
+    const name = userObj.name || 'Anon Investor';
+    const role = userObj.role || 'Trader';
+    const avatar = userObj.avatar || (name.substring(0,2).toUpperCase());
+    const sent = (d.sentiment || 'BULLISH').toUpperCase();
+    const sentBadge = sent === 'BULLISH'
+      ? '<span class="disc-badge-bull">📈 BULLISH</span>'
+      : (sent === 'BEARISH' ? '<span class="disc-badge-bear">📉 BEARISH</span>' : '<span class="disc-badge-neu">⚖️ NEUTRAL</span>');
+
     const commentsHtml = (d.comments || []).map(c => `
-      <div style="font-size:11px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
-        <strong style="color:var(--accent);font-size:10px;">${c.user?.name ?? 'Anon'}</strong>
-        <span class="c-muted ms-1" style="font-size:9px;">${timeAgo(c.created_at)}</span>
-        <div style="color:var(--text2);margin-top:2px;">${c.body}</div>
+      <div style="font-size:11px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;gap:8px;">
+        <div class="disc-avatar" style="width:24px;height:24px;font-size:9px;">${(c.user?.name || 'US').substring(0,2).toUpperCase()}</div>
+        <div style="flex:1;">
+          <div class="d-flex justify-content-between">
+            <strong style="color:var(--accent);font-size:10px;">${c.user?.name ?? 'Anon'}</strong>
+            <span class="c-muted" style="font-size:9px;">${timeAgo(c.created_at)}</span>
+          </div>
+          <div style="color:var(--text2);margin-top:2px;">${c.body}</div>
+        </div>
       </div>
     `).join('');
 
     return `
-      <div class="news-item" id="disc-${d.id}">
-        <div class="d-flex justify-content-between align-items-start">
-          <div>
-            <strong style="font-size:12px;">${d.title}</strong>
-            <span class="c-muted ms-2" style="font-size:9px;">${t('by')} ${d.user?.name ?? 'Anon'} · ${timeAgo(d.created_at)}</span>
+      <div class="news-item" id="disc-${d.id}" style="border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;background:rgba(255,255,255,0.015);">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="d-flex align-items-center gap-2">
+            <div class="disc-avatar">${avatar}</div>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--text);">${name} <span class="c-muted fw-normal" style="font-size:9px;">· ${role}</span></div>
+              <div class="c-muted" style="font-size:9px;">${timeAgo(d.created_at)}</div>
+            </div>
           </div>
-          <div class="d-flex gap-2 align-items-center">
-            <button onclick="likeDiscussion(${d.id})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:10px;">
-              ❤️ <span id="likes-${d.id}">${d.likes}</span>
+          ${sentBadge}
+        </div>
+
+        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;">${d.title}</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:10px;">${d.body}</div>
+
+        <div class="d-flex justify-content-between align-items-center pt-2" style="border-top:1px solid rgba(255,255,255,0.04);">
+          <div class="d-flex gap-3 align-items-center">
+            <button onclick="likeDiscussion(${d.id})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:11px;">
+              ❤️ <span id="likes-${d.id}">${d.likes || 0}</span> Suka
             </button>
-            <button onclick="toggleComments(${d.id})" style="background:none;border:none;cursor:pointer;color:var(--accent);font-size:9px;">
-              💬 ${d.comments?.length ?? 0}
+            <button onclick="toggleComments(${d.id})" style="background:none;border:none;cursor:pointer;color:var(--accent);font-size:11px;">
+              💬 <span id="ccount-${d.id}">${d.comments?.length ?? 0}</span> Komentar
             </button>
           </div>
         </div>
-        <div style="font-size:11px;color:var(--text2);margin-top:5px;line-height:1.5;">${d.body}</div>
-        <div id="comments-${d.id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
-          <div id="comment-list-${d.id}">${commentsHtml}</div>
+
+        <div id="comments-${d.id}" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+          <div id="comment-list-${d.id}">${commentsHtml || '<div class="c-muted" style="font-size:10px;padding:4px 0;">Belum ada komentar. Tulis komentar pertama!</div>'}</div>
           <div class="d-flex gap-2 mt-2">
             <input type="text" id="comment-input-${d.id}" class="form-control-custom"
               placeholder="${t('commentPlaceholder')}" style="flex:1;padding:.35rem .7rem;font-size:11px;">
@@ -2048,12 +2169,14 @@ function toggleComments(id) {
 async function postDiscussion() {
   const title = document.getElementById('discTitle').value.trim();
   const body  = document.getElementById('discBody').value.trim();
+  const sentiment = document.getElementById('discSentiment')?.value || 'BULLISH';
+
   if (!title || !body) { alert(t('discussionRequired')); return; }
   try {
     const res = await fetch(API.DISCUSSIONS, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
-      body: JSON.stringify({ title, body, stock_symbol: 'BBCA' })
+      body: JSON.stringify({ title, body, sentiment, stock_symbol: 'BBCA' })
     });
     if (!res.ok) throw new Error();
     document.getElementById('discTitle').value = '';
