@@ -1,7 +1,9 @@
 <?php
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Api\TradeController;
 use App\Http\Controllers\Api\DiscussionController;
+use App\Http\Controllers\Api\AdminApiController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
 
@@ -51,10 +53,45 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // 3. Admin Panel
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin', function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/', function () {
         return view('admin.dashboard');
     })->name('admin');
+
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    });
+
+    Route::get('/users', function (Request $request) {
+        if ($request->expectsJson() || $request->ajax()) {
+            return app(AdminApiController::class)->getUsers();
+        }
+        return view('admin.dashboard');
+    })->name('admin.users');
+
+    Route::get('/transactions', function (Request $request) {
+        if ($request->expectsJson() || $request->ajax()) {
+            return app(AdminApiController::class)->getTransactions();
+        }
+        return view('admin.dashboard');
+    })->name('admin.transactions');
+
+    Route::get('/reports', function () {
+        return view('admin.dashboard');
+    })->name('admin.reports');
+
+    Route::get('/settings', function (Request $request) {
+        if ($request->expectsJson() || $request->ajax()) {
+            return app(AdminApiController::class)->getSettings();
+        }
+        return view('admin.dashboard');
+    })->name('admin.settings');
+
+    Route::get('/stats', [AdminApiController::class, 'getStats'])->name('admin.stats');
+    Route::post('/users', [AdminApiController::class, 'createUser']);
+    Route::put('/users/{user}', [AdminApiController::class, 'updateUser']);
+    Route::delete('/users/{user}', [AdminApiController::class, 'deleteUser']);
+    Route::post('/settings', [AdminApiController::class, 'saveSettings']);
 });
 
 // 4. Auth Routes
