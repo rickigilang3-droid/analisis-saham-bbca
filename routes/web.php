@@ -44,33 +44,7 @@ Route::middleware(['auth'])->group(function () {
         return view('user.dashboard');
     })->name('dashboard');
 
-    Route::match(['get', 'post'], '/api/ai/analyze', [TradeController::class, 'analyze']);
-    Route::get('/api/get-ai-analysis', [TradeController::class, 'analyze']);
 
-    Route::post('/api/trade',             [TradeController::class, 'execute']);
-    Route::get('/api/portfolio',          [TradeController::class, 'portfolio']);
-    Route::get('/api/trade/history',      [TradeController::class, 'history']);
-    Route::post('/api/trade/reset',       [TradeController::class, 'reset']);
-
-    Route::get('/api/watchlist',          [App\Http\Controllers\Api\WatchlistController::class, 'index']);
-    Route::post('/api/watchlist',         [App\Http\Controllers\Api\WatchlistController::class, 'store']);
-    Route::put('/api/watchlist/{watchlist}', [App\Http\Controllers\Api\WatchlistController::class, 'update']);
-    Route::delete('/api/watchlist/{watchlist}', [App\Http\Controllers\Api\WatchlistController::class, 'destroy']);
-
-    Route::get('/api/market/fundamentals',[App\Http\Controllers\Api\MarketController::class, 'fundamentals']);
-    Route::get('/api/market/backtest',    [App\Http\Controllers\Api\MarketController::class, 'backtest']);
-    Route::get('/api/market/performance', [App\Http\Controllers\Api\MarketController::class, 'performance']);
-    Route::get('/api/market/analysis',    [App\Http\Controllers\Api\MarketController::class, 'analysis']);
-    Route::get('/api/market/sentiment',   [App\Http\Controllers\Api\MarketController::class, 'sentiment']);
-
-    Route::get('/api/discussions', [DiscussionController::class, 'index']);
-    Route::post('/api/discussions', [DiscussionController::class, 'store']);
-    Route::post('/api/discussions/{id}/comments', [DiscussionController::class, 'addComment']);
-    Route::post('/api/discussions/{id}/like', [DiscussionController::class, 'like']);
-    Route::delete('/api/discussions/{id}', [DiscussionController::class, 'destroy']);
-
-    Route::get('/api/events', [App\Http\Controllers\Api\EmitenEventController::class, 'index']);
-    Route::post('/api/events', [App\Http\Controllers\Api\EmitenEventController::class, 'store']);
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -12,12 +12,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/market/quote', [MarketController::class, 'quote']);
 
 // ── Trading API (User) ───────────────────────────────────────────────────
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/trade',             [TradeController::class, 'execute']);
     Route::get('/portfolio',          [TradeController::class, 'portfolio']);
     Route::get('/trade/history',      [TradeController::class, 'history']);
     Route::post('/trade/reset',       [TradeController::class, 'reset']);
     Route::post('/ai/analyze',        [TradeController::class, 'analyze']);
+    Route::get('/ai/analyze',         [TradeController::class, 'analyze']);
 
     Route::get('/watchlist',          [WatchlistController::class, 'index']);
     Route::post('/watchlist',         [WatchlistController::class, 'store']);
@@ -32,7 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // ── Admin Area (Prefix: /api/admin) ──────────────────────────────────────
-Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
+Route::middleware(['web', 'auth', 'admin'])->prefix('admin')->group(function () {
     // Jalur: /api/admin/stats
     Route::get('/stats', [AdminApiController::class, 'getStats']);
 
@@ -51,7 +52,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 });
 
 Route::get('/health', fn() => response()->json(['status' => 'ok']));
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['web', 'auth'])->group(function () {
     // Diskusi
     Route::get('/discussions', [DiscussionController::class, 'index']);
     Route::post('/discussions', [DiscussionController::class, 'store']);
