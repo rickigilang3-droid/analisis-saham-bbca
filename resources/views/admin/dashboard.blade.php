@@ -729,15 +729,58 @@ function setTextById(id, key) {
   if (el) el.textContent = t(key);
 }
 
+function toggleSidebar(forceState) {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (!sidebar) return;
+  const isOpen = forceState !== undefined ? forceState : !sidebar.classList.contains('open');
+  if (isOpen) {
+    sidebar.classList.add('open');
+    if (overlay) overlay.classList.add('show');
+  } else {
+    sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('show');
+  }
+}
+
+function showPage(pageId, btnEl) {
+  document.querySelectorAll('.page-section').forEach(sec => {
+    sec.classList.remove('active');
+    sec.style.display = 'none';
+  });
+
+  const target = document.getElementById(pageId);
+  if (target) {
+    target.classList.add('active');
+    target.style.display = 'block';
+  }
+
+  if (btnEl) {
+    document.querySelectorAll('.sidebar-nav .nav-item').forEach(btn => btn.classList.remove('active'));
+    btnEl.classList.add('active');
+  }
+
+  const pageTitle = pageTitleById(pageId);
+  const titleEl = document.getElementById('pageTitle');
+  if (titleEl) titleEl.textContent = pageTitle;
+
+  if (pageId === 'page-announcement') loadAnnouncementAdmin();
+  if (pageId === 'page-audit-log') loadAuditLogs();
+
+  toggleSidebar(false);
+}
+
 function pageTitleById(pageId) {
   const map = {
-    'page-dashboard': t('pageDashboard'),
-    'page-users': t('pageUsers'),
-    'page-transactions': t('pageTransactions'),
-    'page-reports': t('pageReports'),
-    'page-settings': t('pageSettings')
+    'page-dashboard': 'Dashboard Overview',
+    'page-users': 'Kelola User',
+    'page-transactions': 'Riwayat Transaksi',
+    'page-reports': 'Laporan Analitik',
+    'page-announcement': 'Broadcast Banner Pengumuman',
+    'page-audit-log': 'Log Aktivitas Audit Sistem',
+    'page-settings': 'Pengaturan Sistem'
   };
-  return map[pageId] || t('pageDashboard');
+  return map[pageId] || 'Dashboard Overview';
 }
 
 function applyLanguage(lang, rerenderTitle = true) {
