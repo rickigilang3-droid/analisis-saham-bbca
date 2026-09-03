@@ -908,12 +908,12 @@
           </div>
           <div class="col-4">
             <div class="sec-label" style="font-size:9px;margin-bottom:2px;">VALUASI PER</div>
-            <div style="font-size:13px;font-weight:700;color:#34d399;">23.45x</div>
+            <div style="font-size:13px;font-weight:700;color:#34d399;">15.94x</div>
             <div style="font-size:9px;" class="c-muted">Price to Earnings</div>
           </div>
           <div class="col-4">
             <div class="sec-label" style="font-size:9px;margin-bottom:2px;">VALUASI PBV</div>
-            <div style="font-size:13px;font-weight:700;color:#38bdf8;">4.82x</div>
+            <div style="font-size:13px;font-weight:700;color:#38bdf8;">3.19x</div>
             <div style="font-size:9px;" class="c-muted">Price to Book</div>
           </div>
         </div>
@@ -953,19 +953,19 @@
         <div class="row text-center g-2 mb-3">
           <div class="col-4">
             <div class="sec-label" style="font-size:9px;margin-bottom:2px;">FAIR VALUE (DCF)</div>
-            <div style="font-size:14px;font-weight:700;color:var(--accent);" id="dcfFairVal">Rp 11.200</div>
+            <div style="font-size:14px;font-weight:700;color:var(--accent);" id="dcfFairVal">Rp 7.450</div>
           </div>
           <div class="col-4">
             <div class="sec-label" style="font-size:9px;margin-bottom:2px;">DDM MODEL</div>
-            <div style="font-size:14px;font-weight:700;color:#34d399;" id="ddmFairVal">Rp 10.950</div>
+            <div style="font-size:14px;font-weight:700;color:#34d399;" id="ddmFairVal">Rp 7.200</div>
           </div>
           <div class="col-4">
             <div class="sec-label" style="font-size:9px;margin-bottom:2px;">MARGIN OF SAFETY</div>
-            <div style="font-size:14px;font-weight:700;color:#10b981;" id="mosVal">+8.48%</div>
+            <div style="font-size:14px;font-weight:700;color:#10b981;" id="mosVal">+9.96%</div>
           </div>
         </div>
         <div style="font-size:10px;color:var(--text2);background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.12);border-radius:6px;padding:8px 10px;line-height:1.5;">
-          💡 <strong>Analisis Valuasi BBCA:</strong> Harga pasar saat ini (Rp 6.775) diperdagangkan di bawah Estimasi Harga Wajar DCF (Rp 11.200), memberikan ruang *Margin of Safety* positif sebesar **8.48%** (MOS +39.51% terhadap Fair Value DCF).
+          💡 <strong>Analisis Valuasi BBCA:</strong> Harga pasar saat ini (Rp 6.775) diperdagangkan di bawah Estimasi Harga Wajar DCF (Rp 7.450), memberikan ruang *Margin of Safety* positif sebesar **9.96%** (MOS +6.25% terhadap DDM Model).
         </div>
       </div>
 

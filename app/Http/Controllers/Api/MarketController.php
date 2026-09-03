@@ -35,9 +35,9 @@ class MarketController extends Controller
         $symbol = $this->normalizeSymbol($request->get('symbol', 'BBCA'));
         $currentPrice = 6775;
 
-        $dcfFairValue = 11200;
-        $ddmFairValue = 10950;
-        $marginOfSafety = 8.48;
+        $dcfFairValue = 7450;
+        $ddmFairValue = 7200;
+        $marginOfSafety = 9.96;
 
         $quarterly = [
             ['period' => 'Q3 2025', 'net_profit' => '13.8 T', 'nii' => '21.2 T', 'npl' => '1.9%', 'casa' => '80.4%', 'roe' => '21.8%'],
