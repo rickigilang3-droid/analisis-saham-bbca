@@ -11,6 +11,16 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    ->withExceptions(function (Exceptions $exceptions) {
+        $exceptions->render(function (\Throwable $e) {
+            http_response_code(500);
+            echo "<h1>Caught Exception</h1>";
+            echo "<p><strong>" . get_class($e) . ":</strong> " . htmlspecialchars($e->getMessage()) . "</p>";
+            echo "<p><strong>File:</strong> " . htmlspecialchars($e->getFile()) . ":" . $e->getLine() . "</p>";
+            echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+            exit;
+        });
+    })
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->trustProxies(at: '*');
 
@@ -27,4 +37,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'login',
             'register',
             'logout',
+            'api/*',
+        ]);
     })->create();
