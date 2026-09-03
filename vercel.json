@@ -26,6 +26,9 @@
     "APP_MAINTENANCE_DRIVER": "file",
     "LOG_CHANNEL": "stderr",
     "SESSION_DRIVER": "cookie",
+    "SESSION_LIFETIME": "120",
+    "SESSION_SECURE_COOKIE": "true",
+    "SESSION_EXPIRE_ON_CLOSE": "false",
     "CACHE_STORE": "file"
   }
 }

@@ -64,31 +64,8 @@ try {
         $_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], strlen('/api/index.php')) ?: '/';
     }
 
-    // Force cookie session driver (only stateless option for serverless)
     putenv("SESSION_DRIVER=cookie");
     $_ENV['SESSION_DRIVER'] = 'cookie';
-
-    // Clean up accumulated session cookies to prevent 494 REQUEST_HEADER_TOO_LARGE
-    // The cookie driver stores session data in a cookie named after the session ID.
-    // When session IDs change, old data cookies accumulate and bloat headers.
-    $sessionName = 'sahamid-session';
-    $currentSessionId = $_COOKIE[$sessionName] ?? null;
-    $keepCookies = [$sessionName, 'XSRF-TOKEN'];
-    if ($currentSessionId) {
-        $keepCookies[] = $currentSessionId;
-    }
-    foreach ($_COOKIE as $name => $val) {
-        if (!in_array($name, $keepCookies)) {
-            setcookie($name, '', [
-                'expires' => time() - 86400,
-                'path' => '/',
-                'secure' => true,
-                'httponly' => true,
-                'samesite' => 'Lax',
-            ]);
-            unset($_COOKIE[$name]);
-        }
-    }
 
     require __DIR__ . '/../vendor/autoload.php';
 
