@@ -85,4 +85,4 @@ RUN php artisan key:generate --no-interaction || true
 EXPOSE 8080
 
 # Start services
-CMD ["sh", "-c", "mkdir -p /app/database && touch /app/database/database.sqlite && chmod -R 777 /app/database /app/storage /app/bootstrap/cache && php-fpm -D && supervisord -c /etc/supervisord.conf && nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "sed -i \"s/listen 8080;/listen ${PORT:-8080};/g\" /etc/nginx/http.d/default.conf && mkdir -p /app/database && touch /app/database/database.sqlite && chmod -R 777 /app/database /app/storage /app/bootstrap/cache && php artisan migrate --force && php-fpm -D && supervisord -c /etc/supervisord.conf && nginx -g 'daemon off;'"]

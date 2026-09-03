@@ -18,4 +18,4 @@ services:
       - key: CACHE_STORE
         value: file
       - key: APP_KEY
-        generateValue: true
+        value: base64:BxNxbtxlwrp5bMbBQVYoI8IWYzjDgyg03MDLQ3ocKzA=
