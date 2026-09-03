@@ -70,16 +70,6 @@ try {
     $app = require_once __DIR__ . '/../bootstrap/app.php';
     $app->useStoragePath($tmpStorage);
 
-    // Render detailed exception directly to browser for debugging
-    $app->make(\Illuminate\Contracts\Debug\ExceptionHandler::class)->renderable(function (\Throwable $e) {
-        http_response_code(500);
-        echo "<h1>Original Exception</h1>";
-        echo "<p><strong>" . get_class($e) . ":</strong> " . htmlspecialchars($e->getMessage()) . "</p>";
-        echo "<p><strong>File:</strong> " . htmlspecialchars($e->getFile()) . ":" . $e->getLine() . "</p>";
-        echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
-        exit;
-    });
-
     $app->handleRequest(Request::capture());
 } catch (\Throwable $e) {
     http_response_code(500);
