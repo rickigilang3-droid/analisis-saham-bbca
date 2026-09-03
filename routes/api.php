@@ -60,6 +60,5 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::delete('/discussions/{id}', [DiscussionController::class, 'destroy']);
 
     // Kalender Event
-    Route::get('/events', [EmitenEventController::class, 'index']);
     Route::post('/events', [EmitenEventController::class, 'store']);
 });
