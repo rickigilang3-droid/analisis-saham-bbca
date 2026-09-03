@@ -1446,6 +1446,21 @@ const CORS_PROXIES = [
 ];
 
 async function fetchBBCARealPrice() {
+  // First try server API endpoint
+  try {
+    const apiRes = await fetch('/api/market/quote?symbol=BBCA', { headers: { 'Accept': 'application/json' } });
+    if (apiRes.ok) {
+      const apiData = await apiRes.json();
+      if (apiData.success && apiData.price > 0) {
+        return {
+          price: Math.round(apiData.price),
+          prevClose: Math.round(apiData.previous_close || (apiData.price - 100)),
+          isMarketOpen: true
+        };
+      }
+    }
+  } catch(e) {}
+
   const targetUrl = YAHOO_CHART_URL + '&t=' + Date.now();
   for (let i = 0; i < CORS_PROXIES.length; i++) {
     try {
@@ -1462,8 +1477,7 @@ async function fetchBBCARealPrice() {
       if (closes.length > 10) priceHistory = closes.slice(-60).map(v => Math.round(v));
       let price       = Math.round(meta.regularMarketPrice);
       if (price <= 0) price = 6775;
-      let prevClose   = Math.round(meta.chartPreviousClose || meta.previousClose || 6675);
-      if (prevClose <= 0) prevClose = 6675;
+      let prevClose   = Math.round(meta.chartPreviousClose || meta.previousClose || (price - 100));
       const now = new Date();
       const wib = new Date(now.getTime() + now.getTimezoneOffset()*60000 + 7*3600000);
       const isMarketOpen = (wib.getDay()>=1 && wib.getDay()<=5) && (wib.getHours()>=9 && wib.getHours()<15);
