@@ -8,28 +8,27 @@ use App\Http\Controllers\Api\DiscussionController;
 use App\Http\Controllers\Api\EmitenEventController;
 use Illuminate\Support\Facades\Route;
 
-// ── Public market data (used by the login screen and public pages) ───────
+// ── Public market data & AI analysis ────────────────────────────────────
 Route::get('/market/quote', [MarketController::class, 'quote']);
+Route::match(['get', 'post'], '/ai/analyze', [TradeController::class, 'analyze']);
+Route::get('/market/fundamentals',[MarketController::class, 'fundamentals']);
+Route::get('/market/backtest',    [MarketController::class, 'backtest']);
+Route::get('/market/performance', [MarketController::class, 'performance']);
+Route::get('/market/analysis',    [MarketController::class, 'analysis']);
+Route::get('/market/sentiment',   [MarketController::class, 'sentiment']);
+Route::get('/events',             [EmitenEventController::class, 'index']);
 
-// ── Trading API (User) ───────────────────────────────────────────────────
+// ── Trading API (User Auth) ──────────────────────────────────────────────
 Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/trade',             [TradeController::class, 'execute']);
     Route::get('/portfolio',          [TradeController::class, 'portfolio']);
     Route::get('/trade/history',      [TradeController::class, 'history']);
     Route::post('/trade/reset',       [TradeController::class, 'reset']);
-    Route::post('/ai/analyze',        [TradeController::class, 'analyze']);
-    Route::get('/ai/analyze',         [TradeController::class, 'analyze']);
 
     Route::get('/watchlist',          [WatchlistController::class, 'index']);
     Route::post('/watchlist',         [WatchlistController::class, 'store']);
     Route::put('/watchlist/{watchlist}', [WatchlistController::class, 'update']);
     Route::delete('/watchlist/{watchlist}', [WatchlistController::class, 'destroy']);
-
-    Route::get('/market/fundamentals',[MarketController::class, 'fundamentals']);
-    Route::get('/market/backtest',    [MarketController::class, 'backtest']);
-    Route::get('/market/performance', [MarketController::class, 'performance']);
-    Route::get('/market/analysis',    [MarketController::class, 'analysis']);
-    Route::get('/market/sentiment',   [MarketController::class, 'sentiment']);
 });
 
 // ── Admin Area (Prefix: /api/admin) ──────────────────────────────────────
